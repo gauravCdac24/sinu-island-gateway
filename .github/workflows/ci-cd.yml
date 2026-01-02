@@ -9,6 +9,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
 
     steps:
       - uses: actions/checkout@v4
@@ -32,7 +33,7 @@ jobs:
         with:
           push: true
           tags: |
-            yourdockerhubuser/sinu-island-gateway:${{ github.ref_name }}
+            gauravsingh1998/sinu-website:${{ github.ref_name }}
 
       - name: Deploy
         uses: appleboy/ssh-action@v1.0.3
@@ -42,6 +43,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/sinu-island-gateway
-            docker compose --env-file .env.${{ github.ref_name }} \
-              -f docker-compose.yml \
-              -f docker-compose.${{ github.ref_name }}.yml up -d
+            git pull origin main
+            docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
+            docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+            docker system prune -f
+            echo "Deployment completed!"
