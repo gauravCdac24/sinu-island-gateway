@@ -14,6 +14,14 @@ export default defineConfig(({ mode }) => ({
     mode === 'development' &&
     componentTagger(),
   ].filter(Boolean),
+  build: {
+    rollupOptions: {
+      external: ['@sanity/image-url'],  // Add this line
+    },
+  },
+  optimizeDeps: {
+    include: ['@sanity/image-url'],  // Also add this
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
