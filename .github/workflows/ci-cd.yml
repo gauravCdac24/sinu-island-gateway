@@ -37,10 +37,6 @@ jobs:
 
       - name: Setup SSH
         run: |
-          echo "1. Checking secrets availability..."
-          echo "SSH_PUBLIC_IP length: ${#{{ secrets.SSH_PUBLIC_IP }}}"
-          echo "LINUX_VM_KEY length: ${#{{ secrets.LINUX_VM_KEY }}}"
-          
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
           # Save the Linux VM private key
