@@ -1,52 +1,40 @@
-name: TypeScript CI/CD
+name: Deploy to Linux VM
 
 on:
   push:
-    branches:
-      - main
-      - develop
+    branches: [main]
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-
+    # OLD: runs-on: ubuntu-latest
+    # NEW: Use your self-hosted runner
+    runs-on: self-hosted
+    
+    # OR target specific labels:
+    # runs-on: [self-hosted, linux, deploy]
+    
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-
+          
       - run: npm ci
       - run: npm run build
-
-      - name: Docker Login
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build & Push
+      
+      - name: Docker Build & Push
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: |
-            gauravsingh1998/sinu-website:${{ github.ref_name }}
-            
-      - name: Deploy Direct to Linux VM
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_PUBLIC_IP }}  # Windows IP
-          port: 22                             # Forwarded port
-          username: vboxuser                      # Linux VM username
-          key: ${{ secrets.LINUX_VM_KEY }}    # Linux VM private key
-          passphrase: 'sinu'                     # If your key has a passphrase
-          script: |
-            cd /var/www/sinu-island-gateway
-            git pull origin main
-            docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
-            docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-            docker system prune -f
-            echo "✅ Deployment completed!"
+          tags: yourusername/your-image:latest
+      
+      - name: Deploy on Linux VM
+        run: |
+          echo "Running directly on Linux VM!"
+          cd /var/www/sinu-island-gateway
+          git pull origin main
+          docker-compose up -d --build
+          echo "✅ Deployment complete!"
