@@ -41,8 +41,6 @@ jobs:
           port: 2222                              # Forwarded port
           username: ${{ secrets.SSH_USERNAME }}  # Windows username
           key: ${{ secrets.SSH_PASSWORD }}    # Windows SSH key
-    
-    # Tunnel command to Linux VM
         script: |
           ssh -i /home/runner/.ssh/linux_vm_key \
               -o StrictHostKeyChecking=no \
