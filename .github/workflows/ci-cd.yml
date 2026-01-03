@@ -34,17 +34,7 @@ jobs:
           push: true
           tags: |
             gauravsingh1998/sinu-website:${{ github.ref_name }}
-
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          # Save the Linux VM private key
-          echo "${{ secrets.LINUX_VM_KEY }}" > ~/.ssh/linux_vm_key
-          chmod 600 ~/.ssh/linux_vm_key
-          # Add to known_hosts
-          ssh-keyscan -p 2222 ${{ secrets.SSH_PUBLIC_IP }} >> ~/.ssh/known_hosts 2>/dev/null
-      
+            
       - name: Deploy Direct to Linux VM
         uses: appleboy/ssh-action@v1.0.3
         with:
