@@ -34,18 +34,23 @@ jobs:
           push: true
           tags: |
             gauravsingh1998/sinu-website:${{ github.ref_name }}
-
-      - name: Deploy
+      - name: Deploy via Windows Gateway
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          script: |
+          host: ${{ secrets.SSH_PUBLIC_IP }}  # Windows Server public IP
+          port: 2222                              # Forwarded port
+          username: ${{ secrets.SSH_USERNAME }}  # Windows username
+          key: ${{ secrets.SSH_PASSWORD }}    # Windows SSH key
+    
+    # Tunnel command to Linux VM
+        script: |
+          ssh -i /home/runner/.ssh/linux_vm_key \
+              -o StrictHostKeyChecking=no \
+              vboxuser@10.80.210.65 << 'EOF'
             cd /var/www/sinu-island-gateway
             git pull origin main
             docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
             docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
             docker system prune -f
             echo "Deployment completed!"
+          EOF
