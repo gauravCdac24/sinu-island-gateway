@@ -37,13 +37,17 @@ jobs:
 
       - name: Setup SSH
         run: |
+          echo "1. Checking secrets availability..."
+          echo "SSH_PUBLIC_IP length: ${#{{ secrets.SSH_PUBLIC_IP }}}"
+          echo "LINUX_VM_KEY length: ${#{{ secrets.LINUX_VM_KEY }}}"
+          
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
           # Save the Linux VM private key
           echo "${{ secrets.LINUX_VM_KEY }}" > ~/.ssh/linux_vm_key
           chmod 600 ~/.ssh/linux_vm_key
           # Add to known_hosts
-          ssh-keyscan -p 22 ${{ secrets.SSH_PUBLIC_IP }} >> ~/.ssh/known_hosts 2>/dev/null
+          ssh-keyscan -p 2222 ${{ secrets.SSH_PUBLIC_IP }} >> ~/.ssh/known_hosts 2>/dev/null
       
       - name: Deploy Direct to Linux VM
         uses: appleboy/ssh-action@v1.0.3
