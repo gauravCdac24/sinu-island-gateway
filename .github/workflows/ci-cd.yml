@@ -54,6 +54,7 @@ jobs:
         run: |
           echo "Testing connection to Windows Server..."
           timeout 10 ssh -v -i ~/.ssh/ssh_host_rsa_key \
+            -p 2222 \
             ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_PUBLIC_IP }} \
             "echo 'Connected to Windows Server successfully'" || \
             echo "Connection test failed - check network/firewall"
@@ -63,6 +64,7 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_PUBLIC_IP }}
+          port: 2222
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
