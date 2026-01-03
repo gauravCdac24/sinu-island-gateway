@@ -35,54 +35,28 @@ jobs:
           tags: |
             gauravsingh1998/sinu-website:${{ github.ref_name }}
 
-      # STEP 1: Setup SSH keys properly
-      - name: Setup SSH Keys
+      - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/ssh_host_rsa_key
-          chmod 600 ~/.ssh/ssh_host_rsa_key
-          
-          if [ -n "${{ secrets.LINUX_VM_KEY }}" ]; then
-            echo "${{ secrets.LINUX_VM_KEY }}" > ~/.ssh/linux_vm_key
-            chmod 600 ~/.ssh/linux_vm_key
-          fi
-          
-          ssh-keyscan -p 2222 ${{ secrets.SSH_PUBLIC_IP }} >> ~/.ssh/known_hosts 2>/dev/null || true
-
-      # STEP 2: Test connection before deploy
-      - name: Test SSH Connection
-        run: |
-          echo "Testing connection to Windows Server..."
-          timeout 10 ssh -v -i ~/.ssh/ssh_host_rsa_key \
-            -p 2222 \
-            ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_PUBLIC_IP }} \
-            "echo 'Connected to Windows Server successfully'" || \
-            echo "Connection test failed - check network/firewall"
-
-      # STEP 3: Deploy
-      - name: Deploy via Windows Gateway
+          chmod 700 ~/.ssh
+          # Save the Linux VM private key
+          echo "${{ secrets.LINUX_VM_KEY }}" > ~/.ssh/linux_vm_key
+          chmod 600 ~/.ssh/linux_vm_key
+          # Add to known_hosts
+          ssh-keyscan -p 22 ${{ secrets.SSH_PUBLIC_IP }} >> ~/.ssh/known_hosts 2>/dev/null
+      
+      - name: Deploy Direct to Linux VM
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.SSH_PUBLIC_IP }}
-          port: 2222
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
+          host: ${{ secrets.SSH_PUBLIC_IP }}  # Windows IP
+          port: 22                             # Forwarded port
+          username: vboxuser                      # Linux VM username
+          key: ${{ secrets.LINUX_VM_KEY }}    # Linux VM private key
+          passphrase: 'sinu'                     # If your key has a passphrase
           script: |
-            # Debug info
-            echo "Current user: $(whoami)"
-            echo "Working directory: $(pwd)"
-            echo "Available SSH keys:"
-            ls -la ~/.ssh/ || echo "No .ssh directory"
-            
-            ssh -i /home/${{ secrets.SSH_USERNAME }}/.ssh/linux_vm_key \
-                -o StrictHostKeyChecking=no \
-                -o ConnectTimeout=30 \
-                vboxuser@10.80.210.65 '
-              echo "Connected to Linux VM"
-              cd /var/www/sinu-island-gateway || { echo "Directory not found"; exit 1; }
-              git pull origin main || { echo "Git pull failed"; exit 1; }
-              docker-compose -f docker-compose.yml -f docker-compose.prod.yml down || echo "Some containers might not have been running"
-              docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build || { echo "Docker compose failed"; exit 1; }
-              docker system prune -f || echo "Docker prune failed"
-              echo "✅ Deployment completed successfully!"
-            '
+            cd /var/www/sinu-island-gateway
+            git pull origin main
+            docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
+            docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+            docker system prune -f
+            echo "✅ Deployment completed!"
