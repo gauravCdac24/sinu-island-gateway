@@ -4,7 +4,7 @@ import Footer from '@/components/layout/Footer';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { AlertTriangle, Search } from 'lucide-react';
+import { AlertTriangle, Link, Search } from 'lucide-react';
 import ErrorBoundary from '@/components/common/ErrorBoundary';
 import OptimizedImage from '@/components/common/OptimizedImage';
 import { useNavigate } from "react-router-dom";
@@ -92,6 +92,28 @@ const CourseFinder = () => {
               width={1920}
               height={1080}
             />
+
+                <div
+                  className="
+                    absolute 
+                    inset-x-0 bottom-20 translate-y-50 flex justify-center px-4
+                    sm:inset-x-auto sm:bottom-16 sm:translate-y-0 sm:left-8 md:left-12 sm:justify-start
+                    z-10
+                  "
+                >
+                  <div
+                    className="
+                    bg-[#22a2bf]/50 backdrop-blur-md rounded-2xl shadow-2xl
+                    p-4 sm:p-6 md:p-8 lg:p-10
+                    w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl
+                    text-center sm:text-left
+                  "
+                  >
+                    <h2 className="font-semibold text-xl sm:text-2xl md:text-3xl lg:text-3xl text-[#222] mb-4 sm:mb-6">
+                    Search and Explore Our Programmes
+                    </h2>
+                  </div>
+                </div>
           </div>
         </div>
 
