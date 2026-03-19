@@ -15,7 +15,7 @@ interface Unit {
     unit_credits: string;
 }
 
-const API_BASE = "http://localhost:7000";
+const API_BASE = "http://10.80.210.65:7000";
 
 const ProgrammeStructure = () => {
     const { state } = useLocation();

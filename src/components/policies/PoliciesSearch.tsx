@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
+
 interface PdfFile {
   _id: string;
   filename: string;
@@ -12,6 +13,7 @@ export default function PoliciesSearch() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<PdfFile[]>([]);
   const [loading, setLoading] = useState(false);
+  const API_BASE = import.meta.env.VITE_API_URL;
 
   const handleSearch = async () => {
     setLoading(true);
@@ -22,12 +24,12 @@ export default function PoliciesSearch() {
       if (!query.trim()) {
         // If input empty → fetch all files
         res = await axios.get<PdfFile[]>(
-          "http://localhost:7000/policy_files/all"
+          `${API_BASE}/policy_files/all`
         );
       } else {
         // Search by query
         res = await axios.get<PdfFile[]>(
-          `http://localhost:7000/policy_files/search/${query}`
+          `${API_BASE}/policy_files/search/${query}`
         );
       }
 
@@ -85,7 +87,7 @@ export default function PoliciesSearch() {
             <span className="break-words font-bold">{file.filename}</span>
 
             <a
-              href={`http://localhost:7000/policy_files/file/${file._id}`}
+              href={`${API_BASE}${API_HOST}:${API_PORT}/policy_files/file/${file._id}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 underline text-sm sm:text-base"

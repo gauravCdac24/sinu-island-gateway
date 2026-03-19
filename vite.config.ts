@@ -1,30 +1,29 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
-import path from "path";
-import { componentTagger } from "lovable-tagger";
+import { defineConfig, loadEnv } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
 
-// https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig({
+  plugins: [react()],
   server: {
-    host: "::",
-    port: 8080,
-  },
-  plugins: [
-    react(),
-    mode === 'development' &&
-    componentTagger(),
-  ].filter(Boolean),
-  build: {
-    rollupOptions: {
-      external: ['@sanity/image-url'],  // Add this line
+    port: 3000,
+    host: '0.0.0.0',  // Listen on all interfaces
+    strictPort: true,   // Don't try other ports
+    cors: true,         // Enable CORS
+    hmr: {
+      host: '10.80.210.65',
+      port: 3000
     },
-  },
-  optimizeDeps: {
-    include: ['@sanity/image-url'],  // Also add this
-  },
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
     },
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src')
+      }
+    },
+  preview: {
+    port: 3000,
+    host: '0.0.0.0'
   },
-}));
+    build: {
+    sourcemap: false
+  }
+})

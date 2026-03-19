@@ -10,6 +10,6 @@ connectDB();
 
 // Routes
 app.use("/", fileRoutes);
-
-const PORT = 7000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const hostname = '10.80.210.65';
+const PORT = 3000;
+app.listen(PORT, hostname, () => console.log(`Server running on port ${PORT}`));

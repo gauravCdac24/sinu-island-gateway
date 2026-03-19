@@ -1,21 +1,19 @@
-# Development stage
-FROM node:20-alpine AS development
+FROM node:20-alpine
+
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm i
 
-# Copy ALL source files (not just src/)
-COPY . .                 
+# Copy all source code
+COPY . .
 
-# Build the application
-RUN npm run build
+# Expose ports
+EXPOSE 3000 
+EXPOSE 7000 
 
-# Production stage
-FROM nginx:alpine AS production
-COPY --from=development /app/dist /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Start Vite dev server (for staging/development)
+CMD ["npm", "run", "dev", "--", "--host", "10.80.210.65", "--port", "3000"]

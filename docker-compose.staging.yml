@@ -1,3 +1,0 @@
-services:
-  api:
-    container_name: sinu-api-staging

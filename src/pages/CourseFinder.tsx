@@ -19,7 +19,7 @@ const CourseFinder = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const API_BASE = "http://localhost:7000";
+  const API_BASE = "http://10.80.210.65:3000";
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY);

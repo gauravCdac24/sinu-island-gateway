@@ -1,0 +1,76 @@
+version: "3.9"
+
+services:
+  # Vite Application running on host port 3000
+  app:
+    build: .
+    container_name: sinu-app
+    restart: unless-stopped
+    ports:
+      - "10.80.210.65:3000:3000"  # Bind to specific IP and port
+    environment:
+      NODE_ENV: staging
+      PORT: 3000
+      HOST: 10.80.210.65
+      MONGO_URI: mongodb://0.0.0.0:27017/SINU_DB
+      VITE_API_URL: http://10.80.210.65:3000/
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+    # Development mode with hot reload
+    command: >
+      sh -c "
+        echo '🚀 Starting Vite development server...' &&
+        npm install --silent &&
+        exec npm run dev -- --host 10.80.210.65 --port 3000
+      "
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://10.80.210.65:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - sinu-network
+
+  mongo:
+    image: mongo:7
+    container_name: sinu-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"  # Optional: expose for external tools
+    volumes:
+      - mongo_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    environment:
+      MONGO_INITDB_DATABASE: SINU_DB
+    networks:
+      - sinu-network
+    # For development, run without auth initially
+    command: mongod --bind_ip_all
+
+  # Optional: Mongo Express (Web UI for MongoDB)
+  mongo-express:
+    image: mongo-express
+    container_name: sinu-mongo-express
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: 
+    depends_on:
+      - mongo
+    networks:
+      - sinu-network
+
+networks:
+  sinu-network:
+    driver: bridge
+
+volumes:
+  mongo_data:
