@@ -1,75 +1,107 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Heart, Home, Utensils, Activity } from 'lucide-react';
+import React from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 
 const StudentLifeSection = () => {
   const lifeSupport = [
     {
-      icon: Heart,
-      title: "Counselling & Mental Health",
-      description: "Professional counselling services and mental health support to help you maintain wellbeing throughout your studies.",
-      services: ["Individual counselling", "Group therapy", "Crisis support", "Wellness workshops"]
+      title: "Wellbeing & counselling",
+      description: "Counselling, wellness activities, and support when you need it.",
+      cta: "Health & wellness",
+      to: "/health-wellness",
+      image:
+        "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=900&q=80&auto=format&fit=crop",
     },
     {
-      icon: Home,
-      title: "Accommodation Services",
-      description: "Assistance with finding suitable accommodation options both on-campus and off-campus.",
-      services: ["On-campus housing", "Off-campus listings", "Roommate matching", "Housing advice"]
+      title: "Accommodation",
+      description: "On-campus and off-campus options—plan ahead for each trimester.",
+      cta: "Student accommodation",
+      to: "/student-accommodation",
+      image:
+        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=900&q=80&auto=format&fit=crop",
     },
     {
-      icon: Utensils,
-      title: "Dining & Nutrition",
-      description: "Campus dining options and nutrition support to maintain a healthy lifestyle during your studies.",
-      services: ["Campus cafeterias", "Meal plans", "Nutrition counselling", "Special dietary needs"]
+      title: "Food on campus",
+      description: "Cafés and dining to keep you fuelled between lectures.",
+      cta: "Dining services",
+      to: "/dining-services",
+      image:
+        "https://images.unsplash.com/photo-1555396273-367ea4eb4db1?w=900&q=80&auto=format&fit=crop",
     },
     {
-      icon: Activity,
-      title: "Recreation & Wellness",
-      description: "Sports facilities, fitness programs, and recreational activities to support your physical and mental health.",
-      services: ["Fitness center", "Sports clubs", "Wellness programs", "Recreational activities"]
-    }
+      title: "Sport & recreation",
+      description: "Clubs, facilities, and activities to stay active and connected.",
+      cta: "Sports & recreation",
+      to: "/sports-recreation",
+      image:
+        "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=900&q=80&auto=format&fit=crop",
+    },
   ];
 
   return (
-    <section className="py-16 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#082952] mb-4">
-            Student Life Support
+    <section
+      id="life-support"
+      aria-labelledby="life-support-heading"
+      className="border-t border-slate-200/80 bg-white py-16 md:py-20"
+    >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 max-w-3xl md:mb-12">
+          <p className="text-xs font-bold uppercase tracking-widest text-[#219ebc]">
+            Beyond the lecture room
+          </p>
+          <h2
+            id="life-support-heading"
+            className="mt-2 text-3xl font-bold tracking-tight text-[#082952] sm:text-4xl"
+          >
+            Life outside class
           </h2>
-          <p className="text-lg text-[#082952] max-w-3xl mx-auto">
-            Beyond academics, we provide comprehensive support for all aspects of student life to ensure your university experience is fulfilling and successful.
+          <p className="mt-3 text-base text-slate-600 sm:text-lg">
+            A good study experience includes where you live, what you eat, and how you stay well. Each
+            card shows the topic on the photo—details sit underneath.
           </p>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {lifeSupport.map((support, index) => (
-            <Card key={index} className="border-[#8ecae6] hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="flex items-center mb-4">
-                  <div className="bg-[#d7a12c] p-3 rounded-lg mr-4">
-                    <support.icon className="h-6 w-6 text-white" />
+
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+          {lifeSupport.map((item) => (
+            <Link
+              key={item.title}
+              to={item.to}
+              className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-md transition hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#219ebc]"
+            >
+              {/* Stretched image band — title overlaid on image only */}
+              <div className="relative w-full overflow-hidden">
+                <div className="relative aspect-[16/11] min-h-[180px] w-full sm:aspect-[16/10] sm:min-h-[200px] md:min-h-[220px]">
+                  <img
+                    src={item.image}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div
+                    className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent"
+                    aria-hidden
+                  />
+                  <div className="absolute inset-x-0 bottom-0 p-4 pt-12 md:p-5 md:pt-16">
+                    <h3 className="text-lg font-bold leading-tight text-white drop-shadow-sm md:text-xl">
+                      {item.title}
+                    </h3>
                   </div>
-                  <CardTitle className="text-xl text-[#082952]">{support.title}</CardTitle>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-[#082952] mb-4">{support.description}</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6">
-                  {support.services.map((service, serviceIndex) => (
-                    <div key={serviceIndex} className="flex items-center text-sm text-[#082952]">
-                      <span className="w-1.5 h-1.5 bg-[#219ebc] rounded-full mr-2"></span>
-                      {service}
-                    </div>
-                  ))}
-                </div>
-                <Button className="bg-[#8ecae6] hover:bg-[#8ecae6]/90 text-[#082952]">
-                  Get Support
-                </Button>
-              </CardContent>
-            </Card>
+              </div>
+
+              {/* Copy below the image */}
+              <div className="flex flex-1 flex-col gap-3 border-t border-slate-100 p-4 md:p-5">
+                <p className="text-sm leading-relaxed text-slate-600">{item.description}</p>
+                <span className="mt-auto inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wide text-[#219ebc]">
+                  {item.cta}
+                  <ArrowRight
+                    className="h-3.5 w-3.5 transition group-hover:translate-x-0.5"
+                    aria-hidden
+                  />
+                </span>
+              </div>
+            </Link>
           ))}
         </div>
       </div>

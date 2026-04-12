@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
 import { getstudywithus, urlFor } from '../../../sanity/lib/sanity';
-import HeaderLogo from '../layout/HeaderLogo';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Compass, MessageCircle } from 'lucide-react';
+import OptimizedImage from '@/components/common/OptimizedImage';
 
 export default function StudyWithUs() {
-  const navigate = useNavigate();
   const [studywithus, setStudyWithUs] = useState<any[]>([]);
 
   const getImageSrc = (image: { sanityImage?: any; imageUrl?: string }) => {
@@ -19,83 +19,81 @@ export default function StudyWithUs() {
   }, []);
 
   return (
-    // Responsive top padding: mobile pt-10, desktop pt-32
-    <div className="pt-10 md:pt-20 bg-black/40">
+    <section className="bg-white py-12 md:py-16">
       {studywithus
-      .filter(program => program.title === "Study With Us")
-      .map((program, index) => (
-        <div
-          key={index}
-          className="relative flex flex-col md:flex-row items-center justify-center min-h-screen px-4 sm:px-6 md:px-12 lg:px-24 py-12 gap-8"
-        >
-          {/* Content Box */}
-          <div
-            className="
-              relative z-10
-              bg-[#fff]/95 rounded-xl shadow-lg 
-              p-6 sm:p-8 md:p-10 
-              w-full max-w-sm text-center md:text-left
-              md:absolute md:top-1/2 md:left-60 md:transform md:-translate-y-1/2 md:-translate-x-1/4
-            "
-          >
-            <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold mb-4">
-              {program.title}
-              <span className="block h-1 w-20 bg-blue-600 mx-auto md:mx-0 mt-2 rounded-sm"></span>
-            </h2>
-            <p className="mb-6 text-gray-800 text-justify sm:text-sm md:text-base lg:text-lg">
-              {program.description}
-            </p>
+        .filter((program) => program.title === 'Study With Us')
+        .map((program, index) => (
+          <div key={index} className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+              <div className="order-2 overflow-hidden rounded-2xl border border-gray-200 shadow-xl lg:order-1">
+                <div className="relative aspect-[4/3] w-full sm:aspect-[16/10] lg:aspect-[5/4]">
+                  <OptimizedImage
+                    src={getImageSrc(program.image)}
+                    alt={program.title || 'Students at SINU'}
+                    className="h-full w-full"
+                    objectFit="cover"
+                    width={900}
+                    height={700}
+                  />
+                </div>
+              </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <Button
-                variant="outline"
-                className="w-full sm:w-auto text-[#035ac5] border-[#035ac5] hover:bg-[#035ac5] hover:text-white transition-colors"
-                onClick={() => navigate('/course-finder')}
-              >
-                Find a Degree
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full sm:w-auto text-[#035ac5] border-[#035ac5] hover:bg-[#035ac5] hover:text-white transition-colors"
-                onClick={() => navigate('Ask an academic clicked')}
-              >
-                Ask an Academic
-              </Button>
+              <div className="order-1 space-y-5 lg:order-2 lg:pr-4">
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-widest text-university-blue">
+                    Your future
+                  </span>
+                  <h2 className="mt-2 text-3xl font-bold text-university-dark-gray sm:text-4xl">
+                    {program.title}
+                    <span className="mt-3 block h-1 w-16 rounded-full bg-university-gold" />
+                  </h2>
+                </div>
+                <p className="text-justify text-base leading-relaxed text-gray-700 sm:text-lg">
+                  {program.description}
+                </p>
+                <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                  <Button
+                    className="h-11 bg-university-blue font-semibold text-white hover:bg-university-dark-gray"
+                    asChild
+                  >
+                    <Link to="/course-finder" className="inline-flex items-center gap-2">
+                      <Compass className="h-4 w-4" aria-hidden />
+                      Find a programme
+                    </Link>
+                  </Button>
+                  <Button variant="outline" className="h-11 border-university-blue font-semibold" asChild>
+                    <Link to="/student-academic-support" className="inline-flex items-center gap-2">
+                      <MessageCircle className="h-4 w-4" aria-hidden />
+                      Ask student support
+                    </Link>
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
+        ))}
 
-          {/* Image */}
-          <div className="relative w-full md:w-auto">
-            <img
-              src={getImageSrc(program.image)}
-              alt={program.title}
-              className="
-                h-80 sm:h-96 md:h-[34rem] lg:h-[40rem] 
-                w-full md:w-auto 
-                object-cover rounded-xl 
-                shadow-lg 
-                transition-transform duration-300 ease-in-out hover:scale-105
-              "
-            />
+      <div className="mt-12 border-t border-gray-100 bg-university-light-gray/80 md:mt-16">
+        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-4 py-8 sm:flex-row sm:items-center sm:px-6 lg:px-8">
+          <div>
+            <h3 className="text-xl font-bold text-university-dark-gray sm:text-2xl">
+              Life on campus
+            </h3>
+            <p className="mt-1 max-w-xl text-sm text-gray-600 sm:text-base">
+              Clubs, events, support services, and spaces where you will feel at home.
+            </p>
           </div>
+          <Button
+            className="h-11 shrink-0 bg-university-gold font-bold text-university-dark-gray hover:bg-university-gold/90"
+            asChild
+          >
+            <Link to="/student-clubs" className="inline-flex items-center gap-2">
+              Explore student life
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+          </Button>
         </div>
-      ))}
-      <div className="w-full bg-[#22a2bf] shadow-md transition-all duration-300 ease-in-out md:mt-20">
-      {/* Reduced height only on desktop */}
-      <div className="container mx-auto md:px-40 flex items-center justify-between py-5 lg:py-6">
-      <h2 className="text-black text-2xl md:text-4xl font-semibold">
-        Interested about Life in SINU? 
-        <span className="block md:h-1 md:w-20 bg-blue-600 mx-auto mt-2 rounded-sm"></span>
-      </h2>
-                    <Button
-                      size="lg"
-                      className="bg-[#ffb703] hover:bg-blue-600 hover:text-black text-[#082952] font-bold text-base sm:text-lg md:text-xl px-4 sm:px-9 md:px-20 py-2 sm:py-3 md:py-4 w-full sm:w-auto"
-                      asChild
-                    >
-                    <Link to="/undergraduate-study">Learn More</Link>
-                    </Button>
-    </div>  
-    </div>
-    </div>
+      </div>
+    </section>
   );
 }

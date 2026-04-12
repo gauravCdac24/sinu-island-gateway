@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar, DollarSign, Clock, ExternalLink } from 'lucide-react';
 
 const FundingOpportunities = () => {
@@ -167,13 +168,14 @@ const FundingOpportunities = () => {
                     <ExternalLink className="w-4 h-4 inline mr-2" />
                     View Details
                   </button>
-                  <button 
-                    className="py-2 px-4 rounded-lg font-medium transition-all duration-200 hover:shadow-md"
+                  <Link 
+                    to="/apply"
+                    className="py-2 px-4 rounded-lg font-medium transition-all duration-200 hover:shadow-md inline-block text-center"
                     style={{ backgroundColor: '#219ebc', color: '#ffffff' }}
                   >
                     <ArrowRight className="w-4 h-4 inline mr-2" />
                     Apply Now
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>

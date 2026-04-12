@@ -1,6 +1,7 @@
 import React from 'react';
 import MegaMenu from './MegaMenu';
 import { megaMenuData } from '@/data/megaMenuData';
+import { cn } from '@/lib/utils';
 
 interface MainNavigationProps {
   isScrolled?: boolean;
@@ -26,10 +27,20 @@ const MainNavigation: React.FC<MainNavigationProps> = ({ isScrolled = false, isM
     );
   }
 
+  const entries = Object.entries(megaMenuData);
+  const lastIndex = entries.length - 1;
+
   // Desktop layout
   return (
-    <nav className="flex justify-center gap-4 ">
-      {Object.entries(megaMenuData).map(([key, menuData], index) => (
+    <nav
+      className={cn(
+        'flex justify-center',
+        isScrolled
+          ? 'min-w-0 flex-nowrap justify-center gap-0.5 overflow-visible md:gap-1 lg:gap-2'
+          : 'flex-wrap gap-1 md:gap-2 lg:gap-3'
+      )}
+    >
+      {entries.map(([key, menuData], index) => (
         <MegaMenu
           key={key}
           id={`mega-menu-${index}`}
@@ -37,6 +48,7 @@ const MainNavigation: React.FC<MainNavigationProps> = ({ isScrolled = false, isM
           links={menuData.links || []}
           image={menuData.image}
           isScrolled={isScrolled}
+          alignDropdownEnd={index === lastIndex}
         />
       ))}
     </nav>

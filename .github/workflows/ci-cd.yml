@@ -1,40 +1,75 @@
-name: Deploy to Linux VM
+name: CI and staging deploy
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-staging-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
-    # OLD: runs-on: ubuntu-latest
-    # NEW: Use your self-hosted runner
-    runs-on: self-hosted
-    
-    # OR target specific labels:
-    # runs-on: [self-hosted, linux, deploy]
-    
+  test:
+    name: Lint and build
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: "20"
           cache: npm
-          
-      - run: npm ci
-      - run: npm run build
-      
-      - name: Docker Build & Push
-        uses: docker/build-push-action@v5
-        with:
-          push: true
-          tags: yourusername/your-image:latest
-      
-      - name: Deploy on Linux VM
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Production build (Vite)
+        run: npm run build
+
+  deploy-staging:
+    name: Deploy staging (Docker Compose)
+    needs: [test]
+    runs-on: self-hosted
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and start containers
+        env:
+          COMPOSE_PROJECT_NAME: sinu-staging
         run: |
-          echo "Running directly on Linux VM!"
-          cd /var/www/sinu-island-gateway
-          git pull origin main
-          docker-compose up -d --build
-          echo "✅ Deployment complete!"
+          set -euo pipefail
+          docker compose -f docker-compose-staging.yml build
+          docker compose -f docker-compose-staging.yml up -d --force-recreate
+          docker compose -f docker-compose-staging.yml ps
+
+      - name: Smoke check (frontend + API via nginx)
+        run: |
+          set -euo pipefail
+          sleep 5
+          curl -fsS "http://127.0.0.1:3000/health" | head -c 200
+          echo ""
+          curl -fsS "http://127.0.0.1:3000/api/health" | head -c 200
+          echo ""
+
+  # Optional: use this job instead of deploy-staging if you deploy from GitHub-hosted runners over SSH.
+  # Uncomment and set secrets: STAGING_HOST, STAGING_USER, STAGING_SSH_KEY, STAGING_DEPLOY_PATH
+  # deploy-staging-ssh:
+  #   needs: [test]
+  #   runs-on: ubuntu-latest
+  #   if: false
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Deploy over SSH
+  #       uses: appleboy/ssh-action@v1.2.0
+  #       with:
+  #         host: ${{ secrets.STAGING_HOST }}
+  #         username: ${{ secrets.STAGING_USER }}
+  #         key: ${{ secrets.STAGING_SSH_KEY }}
+  #         script: |
+  #           set -e
+  #           cd ${{ secrets.STAGING_DEPLOY_PATH }}
+  #           git pull origin main
+  #           docker compose -f docker-compose-staging.yml up -d --build

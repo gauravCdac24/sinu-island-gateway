@@ -4,14 +4,20 @@ services:
   # Vite Frontend
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile.production
+      context: .
+      dockerfile: dockerfile
       args:
-        NODE_ENV: production
+        MODE: production
     image: gauravsingh1998/sinu-frontend:${FRONTEND_TAG:-latest}
     restart: always
-    expose:
-      - "5173"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/production/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/production/conf.d:/etc/nginx/conf.d
+      - ./ssl/production:/etc/nginx/ssl
+      - ./nginx/logs:/var/log/nginx
     environment:
       NODE_ENV: ${NODE_ENV:-production}
       VITE_API_URL: ${VITE_API_URL:-/api}
@@ -19,7 +25,7 @@ services:
     networks:
       - sinu-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://10.80.210.65:3000"]
+      test: ["CMD", "curl", "-k", "-f", "https://localhost"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -61,24 +67,6 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
-
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/production/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/production/conf.d:/etc/nginx/conf.d
-      - ./ssl/production:/etc/nginx/ssl
-      - ./nginx/logs:/var/log/nginx
-      - ./frontend/dist:/usr/share/nginx/html:ro
-    depends_on:
-      - frontend
-      - api
-    networks:
-      - sinu-network
-    restart: unless-stopped
 
   # Optional: Redis cache for production
   redis:

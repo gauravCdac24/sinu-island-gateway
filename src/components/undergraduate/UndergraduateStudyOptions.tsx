@@ -65,9 +65,16 @@ const UndergraduateStudyOptions: React.FC = () => {
 
   /* ---------------- UI ---------------- */
   return (
-    <div className="w-full max-w-3xl mx-auto p-6 md:pt-20">
+    <section
+      id="ug-programmes"
+      aria-labelledby="ug-programmes-heading"
+      className="mx-auto w-full max-w-3xl p-6 md:pt-20"
+    >
       <div className="text-center mb-10">
-        <h2 className="text-3xl md:text-4xl font-bold text-[#222222]">
+        <h2
+          id="ug-programmes-heading"
+          className="text-3xl md:text-4xl font-bold text-[#222222]"
+        >
           Undergraduate Degrees
         </h2>
         <span className="block h-1 w-20 bg-blue-600 mx-auto mt-2 rounded-sm"></span>
@@ -104,7 +111,8 @@ const UndergraduateStudyOptions: React.FC = () => {
         </div>
       )}
 
-          {results.map((programme) => (
+      <div className="mt-6 space-y-6">
+        {results.map((programme) => (
             <div
               key={programme._id}
               onClick={() =>
@@ -157,8 +165,8 @@ const UndergraduateStudyOptions: React.FC = () => {
               </div>
             </div>
           ))}
-
-        </div>
+      </div>
+    </section>
   );
 };
 

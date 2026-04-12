@@ -20,7 +20,7 @@ const learningPathways = [
     id: "form3-4",
     title: "For Form 3 and 4",
     description: "Explore foundation-level courses to build core skills.",
-    features: ["Also known as UPC3 for Level 3", "Also known as UPC4 for Level 4", "Programme of study is equivalent to Year 12 education studies on the Solomon Islands Qualification Framework", "Programme of study is equivalent to Year 13 or University Foundation studies on the Solomon Islands Qualification Framework", "Level 3 - Those who completed Year 11 studies, or equivalent", "Level 4 - Those who completed Year 12 studies, or equivalent" ],
+    features: ["UPC 3: Typically caters to students who need further preparation beyond Form 6 to progress to higher studies.", "UPC 4: Serves as a more advanced level, preparing students who have completed UPC 3 or equivalent qualifications to transition into degree-level studies.",],
     image: "/public/lovable-uploads/9763b031-1bb6-490a-bd9c-b086819fa224.png",
     eligibleCourses: [
       { title: "Course 1", image: "/public/lovable-uploads/a23d8180-72b6-4460-bda4-a7f878b1d27b.png", description: "desc" },

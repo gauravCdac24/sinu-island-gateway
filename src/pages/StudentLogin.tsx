@@ -1,20 +1,48 @@
-
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { getApiBaseUrl } from "@/lib/apiBase";
+import { setStudentToken } from "@/lib/authStorage";
+import { toast } from "sonner";
 
 const StudentLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [studentId, setStudentId] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const API = getApiBaseUrl();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Login logic would go here
-    console.log('Student login attempted with:', { studentId, password });
+    setLoading(true);
+    try {
+      const res = await fetch(`${API}/student/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
+      });
+      const data = (await res.json()) as { token?: string; error?: string; mustResetPassword?: boolean };
+      if (!res.ok) {
+        toast.error(data.error || "Sign in failed");
+        return;
+      }
+      if (data.token) {
+        setStudentToken(data.token);
+        if (data.mustResetPassword) {
+          toast.info("Please change your password after signing in.");
+        }
+        toast.success("Welcome");
+        navigate("/student-portal", { replace: true });
+      }
+    } catch {
+      toast.error("Network error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -32,13 +60,16 @@ const StudentLogin = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="studentId" className="text-[#082952] font-medium">Student ID</Label>
+            <Label htmlFor="email" className="text-[#082952] font-medium">
+              Email
+            </Label>
             <Input
-              id="studentId"
-              type="text"
-              value={studentId}
-              onChange={(e) => setStudentId(e.target.value)}
-              placeholder="Enter your student ID"
+              id="email"
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="The email on your application"
               className="border-[#8ecae6] focus:border-[#219ebc]"
               required
             />
@@ -77,23 +108,24 @@ const StudentLogin = () => {
                 Remember me
               </Label>
             </div>
-            <Link to="#" className="text-sm text-[#219ebc] hover:text-[#082952]">
+            <Link to="/student-forgot-password" className="text-sm text-[#219ebc] hover:text-[#082952]">
               Forgot password?
             </Link>
           </div>
 
           <Button
             type="submit"
+            disabled={loading}
             className="w-full bg-[#219ebc] hover:bg-[#082952] text-white py-2 px-4 rounded-md transition-colors"
           >
-            Sign In
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign In"}
           </Button>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-[#082952]">
             New student?{' '}
-            <Link to="/applicant-login" className="text-[#219ebc] hover:text-[#082952]">
+            <Link to="/apply" className="text-[#219ebc] hover:text-[#082952]">
               Apply here
             </Link>
           </p>

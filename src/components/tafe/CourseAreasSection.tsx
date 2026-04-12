@@ -26,7 +26,7 @@ interface Programme {
   programme_credits: number;
 }
 
-const API_BASE = "http://10.80.210.65:7000";
+const API_BASE = import.meta.env.VITE_API_URL_7000 || "http://localhost:7000";
 
 const CourseAreasSection = () => {
   const [programmes, setProgrammes] = useState<Programme[]>([]);
@@ -101,7 +101,7 @@ const CourseAreasSection = () => {
   }, [isPaused, direction]);
 
   return (
-    <section id= "tafe-courses" className="py-4 bg-white md:mt-20">
+    <section id="tafe-courses" className="py-4 bg-white md:mt-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-[#222222] mb-4">

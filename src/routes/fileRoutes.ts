@@ -83,7 +83,9 @@ router.get("/policy_files/search/:name", async (req, res) => {
     console.log("Searching for:", keyword);
     const files = await PolicyFileModel.find({
       filename: keyword ? { $regex: keyword, $options: "i" } : {},
-    });
+    })
+      .select("_id filename mimetype createdAt updatedAt")
+      .sort({ createdAt: -1 });
     console.log("Found files:", files.length);
     res.json(files);
   } catch (err) {

@@ -1,6 +1,7 @@
 
 import { GraduationCap, Globe, Users, FileCheck } from 'lucide-react';
 import { Button } from '../ui/button';
+import { Link } from 'react-router-dom';
 
 const AdmissionHero = () => {
   return (
@@ -26,8 +27,8 @@ const AdmissionHero = () => {
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 py-8">
-                <Button className="bg-blue-600 hover:bg-[#082952] text-white px-8 py-3">
-                  Apply Now
+                <Button className="bg-blue-600 hover:bg-[#082952] text-white px-8 py-3" asChild>
+                  <Link to="/apply">Apply Now</Link>
                 </Button>
                 <Button className="bg-white text-[#082952] hover:bg-[#082952] hover:text-white border-0 px-8 py-3 transition-all duration-300">
                   Browse Programs

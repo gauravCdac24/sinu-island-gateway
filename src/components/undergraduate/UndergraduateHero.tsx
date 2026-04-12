@@ -1,80 +1,67 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import OptimizedImage from '@/components/common/OptimizedImage';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import OptimizedImage from "@/components/common/OptimizedImage";
 
 const UndergraduateHero = () => {
   return (
-    <section className="bg-[#edf4ff] relative overflow-hidden">
-      {/* Background Image Container with Responsive Aspect Ratios */}
-      <div className="relative w-full">
-        {/* Desktop: 16:9 aspect ratio */}
-        <div className="hidden lg:block h-[800px] w-full">
-          <OptimizedImage
-            src="/lovable-uploads/IMG_4756.JPG"
-            alt="SINU students celebrating achievement"
-            className="w-full h-full object-cover"
-            objectFit="cover"
-          />
-        </div>
-
-        {/* Tablet: 4:3 aspect ratio */}
-        <div className="hidden md:block lg:hidden aspect-[4/3] w-full">
-          <OptimizedImage
-            src="/lovable-uploads/IMG_4756.JPG"
-            alt="SINU students celebrating achievement"
-            className="w-full h-full object-cover"
-            objectFit="cover"
-          />
-        </div>
-
-        {/* Mobile: 9:16 aspect ratio */}
-        <div className="block md:hidden aspect-[9/16] w-full">
-          <OptimizedImage
-            src="/lovable-uploads/IMG_4756.JPG"
-            alt="SINU students celebrating achievement"
-            className="w-full h-full object-cover"
-            objectFit="cover"
-          />
-        </div>
-
-        {/* Content Overlay */}
+    <section
+      className="relative isolate min-h-[min(88vh,820px)] overflow-hidden bg-[#082952]"
+      aria-labelledby="ug-hero-title"
+    >
+      <div className="absolute inset-0" aria-hidden>
+        <OptimizedImage
+          src="/lovable-uploads/IMG_4756.JPG"
+          alt=""
+          className="h-full w-full object-cover"
+          objectFit="cover"
+        />
         <div
-          className="
-            absolute inset-0 flex 
-            items-center justify-center text-center
-            md:items-end md:justify-start md:text-left
-            p-4 md:p-12
-          "
-        >
-          <div className="relative z-10 max-w-4xl mt-40">
-            <h1
-              className="text-4xl md:text-5xl font-bold text-white  text-center bg-black/50 inline-block px-4 py-2"
-              style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}
-            >
-              Undergraduate
-            </h1>
+          className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/35"
+          aria-hidden
+        />
+      </div>
 
-            <Card className="bg-[#22a2bf]/70 border-0 max-w-2xl">
-              <CardContent className="p-6 md:p-8">
-                <h3 className="text-xl md:text-3xl font-semibold text-white mb-4">
-                  Prepare Yourself for a Great Future with Confidence
-                </h3>
-                <p className="text-sm text-white leading-relaxed">
-                  There are multiple ways to apply for your preferred degree,
-                  whether you are completing high school or looking to study as
-                  a non-school leaver.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start py-6">
-                  <Button className="bg-[#ffb703] hover:bg-[#082952] text-white px-8 py-3">
-                    Apply Now
-                  </Button>
-                  <Button className="bg-white text-[#082952] hover:bg-[#082952] hover:text-white border-0 px-8 py-3 transition-all duration-300">
-                    Download Prospectus
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+      <div className="relative z-10 flex min-h-[min(88vh,820px)] flex-col justify-end px-4 pb-10 pt-24 sm:px-8 md:px-12 md:pb-14 lg:px-16">
+        <div className="mx-auto w-full max-w-3xl text-center md:mx-0 md:text-left">
+          <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-[#8ecae6]">
+            Undergraduate study
+          </p>
+          <h1
+            id="ug-hero-title"
+            className="text-4xl font-bold leading-tight text-white drop-shadow-md sm:text-5xl"
+          >
+            Build your future at SINU
+          </h1>
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-white/95 md:text-lg">
+            Whether you are completing high school or returning as a non–school leaver, we offer
+            pathways into degrees that match your goals. Explore programmes, check entry criteria,
+            then apply online.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+            <Button
+              asChild
+              size="lg"
+              className="min-h-[48px] bg-[#ffb703] px-8 text-base font-semibold text-[#082952] shadow-lg hover:bg-[#e5a500] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#082952]"
+            >
+              <Link to="/apply">Apply now</Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="min-h-[48px] border-2 border-white/90 bg-white/10 px-8 text-base font-semibold text-white backdrop-blur-sm hover:bg-white hover:text-[#082952] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#082952]"
+            >
+              <Link to="/course-finder">Find a programme</Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="ghost"
+              className="min-h-[48px] text-white hover:bg-white/15 hover:text-white focus-visible:ring-2 focus-visible:ring-white"
+            >
+              <Link to="/admission-requirements">Entry requirements</Link>
+            </Button>
           </div>
         </div>
       </div>

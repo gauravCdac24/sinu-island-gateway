@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, Calendar, FileText, Phone } from 'lucide-react';
 
@@ -17,7 +18,8 @@ const EnrollmentSection = () => {
       title: "2. Apply Online",
       description: "Complete your application form and upload required documents through our online portal.",
       button: "Apply Now",
-      targetId: "apply-section"
+      targetId: "apply-section",
+      linkTo: "/apply",
     },
     {
       icon: Phone,
@@ -75,13 +77,23 @@ const EnrollmentSection = () => {
                   {step.description}
                 </CardDescription>
                 <div className="mt-auto">
-                  <Button 
-                    variant="outline" 
-                    className="w-full text-[#035ac5ff] border-[#035ac5ff] hover:bg-[#035ac5ff] hover:text-white"
-                    onClick={() => scrollToSection(step.targetId)}
-                  >
-                    {step.button}
-                  </Button>
+                  {"linkTo" in step && step.linkTo ? (
+                    <Button
+                      variant="outline"
+                      className="w-full text-[#035ac5ff] border-[#035ac5ff] hover:bg-[#035ac5ff] hover:text-white"
+                      asChild
+                    >
+                      <Link to={step.linkTo}>{step.button}</Link>
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      className="w-full text-[#035ac5ff] border-[#035ac5ff] hover:bg-[#035ac5ff] hover:text-white"
+                      onClick={() => scrollToSection(step.targetId)}
+                    >
+                      {step.button}
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>

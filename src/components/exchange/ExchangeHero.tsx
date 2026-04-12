@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 import exchangeHeroImage from '@/assets/exchange-program-hero.jpg';
 
 const ExchangeHero = () => {
@@ -27,8 +28,9 @@ const ExchangeHero = () => {
             <Button 
               size="lg" 
               className="bg-[#ffb703] hover:bg-[#d7a12c] text-[#082952] font-semibold px-8 py-3"
+              asChild
             >
-              Apply Now
+              <Link to="/apply">Apply Now</Link>
             </Button>
             <Button 
               size="lg" 

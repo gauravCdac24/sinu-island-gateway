@@ -2,8 +2,6 @@ import React from 'react';
 import Header from '@/components/layout/Header';
 import Hero from '@/components/home/Hero';
 import FeaturedPrograms from '@/components/home/FeaturedPrograms';
-import NewsEvents from '@/components/home/NewsEvents';
-import QuickLinks from '@/components/home/QuickLinks';
 import Footer from '@/components/layout/Footer';
 import BackToTop from '@/components/common/BackToTop';
 import ErrorBoundary from '@/components/common/ErrorBoundary';
@@ -13,47 +11,59 @@ import StudentServices from '@/components/home/StudentServices';
 import OurStories from '@/components/home/OurStories';
 import NewsAndEvents from '@/components/home/NewsAndEvents';
 import DFL from '@/components/home/DFL';
+import QuickLinks from '@/components/home/QuickLinks';
 
 const Index = () => {
   return (
-    <div className="relative min-h-screen flex flex-col">
-      {/* Fixed background image in bottom-right corner */}
+    <div className="relative min-h-screen flex flex-col bg-university-light-gray/50">
+      {/* Light decorative watermark — valid CSS url (was broken: string without url()) */}
       <div
-        className="fixed bottom-0 right-0 w-full h-full pointer-events-none z-0"
+        className="pointer-events-none fixed inset-0 z-0 opacity-[0.06]"
         style={{
-          backgroundImage: "/lovable-uploads/DSC05719.jpg",
+          backgroundImage: "url('/lovable-uploads/DSC05719.jpg')",
           backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center ',
-          backgroundSize: '25%', // show only 1/4 of the image
-          opacity: 0.15, // optional for watermark effect
+          backgroundPosition: '100% 100%',
+          backgroundSize: 'min(45vw, 520px)',
         }}
+        aria-hidden
       />
 
-      {/* Header stays fixed over Hero */}
       <Header />
 
-      {/* Hero */}
       <div className="relative z-10">
-        <Hero />
+        <Hero compact />
       </div>
 
-      {/* Main Content */}
-      <main className="flex-grow w-full relative z-10">
-        <div className="flex flex-col">
-          <ErrorBoundary><MissonVision /></ErrorBoundary>
-          <ErrorBoundary><StudyWithUs /></ErrorBoundary>
-          <ErrorBoundary><StudentServices /></ErrorBoundary>
-          <ErrorBoundary><FeaturedPrograms /></ErrorBoundary>
-          <ErrorBoundary><DFL /></ErrorBoundary>
-          <ErrorBoundary><OurStories /></ErrorBoundary>
-          <ErrorBoundary><NewsAndEvents /></ErrorBoundary>
-        </div>
+      <main className="relative z-10 flex-grow w-full">
+        <ErrorBoundary>
+          <MissonVision />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <StudyWithUs />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <StudentServices />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <FeaturedPrograms />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <QuickLinks />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <DFL />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <OurStories />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <NewsAndEvents />
+        </ErrorBoundary>
       </main>
 
-      {/* Footer */}
-      <ErrorBoundary><Footer /></ErrorBoundary>
-
-      {/* Back to top floating button */}
+      <ErrorBoundary>
+        <Footer />
+      </ErrorBoundary>
       <BackToTop />
     </div>
   );

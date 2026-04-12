@@ -16,9 +16,18 @@ interface MegaMenuProps {
   links: LinkItem[];
   image?: ImageItem;
   isScrolled?: boolean;
+  /** Anchor dropdown to the right so the panel stays in the viewport (e.g. last nav item). */
+  alignDropdownEnd?: boolean;
 }
 
-const MegaMenu: React.FC<MegaMenuProps> = ({ id, title, links, image, isScrolled = false }) => {
+const MegaMenu: React.FC<MegaMenuProps> = ({
+  id,
+  title,
+  links,
+  image,
+  isScrolled = false,
+  alignDropdownEnd = false,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -34,13 +43,12 @@ const MegaMenu: React.FC<MegaMenuProps> = ({ id, title, links, image, isScrolled
   }, []);
 
   const buttonClasses = `
-    px-4 py-3 flex items-center justify-between w-full md:w-auto rounded-sm
-    font-sans font-medium text-sm sm:text-base md:text-lg lg:text-xl
-    transition-colors focus:outline-none
+    px-2 py-2 flex items-center justify-between w-full md:w-auto rounded-lg
+    font-sans font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-university-gold focus-visible:ring-offset-2
     ${
       isScrolled
-        ? "text-white hover:text-[#222] hover:bg-[#22a2bf]/70"
-        : "text-white hover:text-[#222] hover:bg-[#22a2bf]/70 pt-4"
+        ? "px-3 py-2.5 text-sm text-white hover:bg-white/10 hover:text-university-gold md:px-3.5 md:py-3 md:text-base lg:px-4"
+        : "text-sm sm:text-base md:text-lg md:py-3 px-3 py-2.5 text-white hover:bg-white/10 hover:text-university-gold"
     }
   `;
 
@@ -67,18 +75,19 @@ const MegaMenu: React.FC<MegaMenuProps> = ({ id, title, links, image, isScrolled
       <div
         id={id}
         className={`
-          absolute top-full left-0 z-50 hidden md:block bg-white border-t border-[#8ecae6] shadow-lg
+          absolute top-full z-[110] hidden md:block bg-white border-t-2 border-university-gold shadow-xl
           transform transition-all duration-300 ease-in-out
-          ${isOpen ? "opacity-100 scale-y-100" : "opacity-0 scale-y-0"}
+          ${alignDropdownEnd ? "right-0 left-auto origin-top-right" : "left-0 origin-top"}
+          ${isOpen ? "opacity-100 scale-y-100" : "pointer-events-none opacity-0 scale-y-0"}
         `}
       >
-        <div className="p-4 md:px-6 md:py-4 flex flex-col md:flex-row gap-6 w-max">
+        <div className="flex w-max max-w-[min(100vw-1.5rem,28rem)] flex-col gap-6 p-4 md:flex-row md:px-6 md:py-4">
           <ul className="flex-1 space-y-4">
             {links.map((link, index) => (
               <li key={index}>
                 <a
                   href={link.url}
-                  className="block font-sans text-base text-[#222]/70 hover:text-[#222] font-bold transition-colors"
+                  className="block font-sans text-base font-semibold text-university-dark-gray/80 transition-colors hover:text-university-blue"
                 >
                   {link.title}
                 </a>
@@ -90,13 +99,13 @@ const MegaMenu: React.FC<MegaMenuProps> = ({ id, title, links, image, isScrolled
 
       {/* Mobile Collapsible List */}
       {isOpen && (
-        <div className="md:hidden pl-6 pr-4 py-6 bg-white border-l border-[#8ecae6]">
+        <div className="md:hidden border-l-2 border-university-light-blue bg-university-light-gray/40 py-4 pl-4 pr-3">
           <ul className="space-y-3">
             {links.map((link, index) => (
               <li key={index}>
                 <a
                   href={link.url}
-                  className="block font-sans text-sm text-[#222]/70 hover:text-[#222] text-bold transition-colors"
+                  className="block font-sans text-sm font-medium text-university-dark-gray/90 transition-colors hover:text-university-blue"
                 >
                   {link.title}
                 </a>

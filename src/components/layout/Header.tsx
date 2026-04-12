@@ -29,14 +29,14 @@ const Header = () => {
 
   return (
     <>
-      {/* Default transparent header over Hero */}
-      <div className="absolute top-0 left-0 w-full z-20">
+      {/* Over hero: readable bar aligned with max-w-7xl content */}
+      <header className="absolute left-0 top-0 z-[80] w-full">
         <DesktopHeader isScrolled={false} />
-      </div>
+      </header>
 
-      {/* Fixed scrolled header for desktop only */}
+      {/* Compact bar after scroll (desktop) — stays above page content */}
       <div
-        className={`fixed top-0 left-0 w-full z-50 transition-transform duration-300 ease-in-out ${
+        className={`fixed left-0 top-0 z-[100] w-full transition-transform duration-300 ease-in-out ${
           isScrolled ? 'translate-y-0' : '-translate-y-full'
         }`}
       >

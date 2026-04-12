@@ -29,7 +29,7 @@ const PostgraduateStudyOptions: React.FC = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const navigate = useNavigate();
 
-  const API_BASE = "http://10.80.210.65:7000";
+  const API_BASE = import.meta.env.VITE_API_URL_7000 || "http://localhost:7000";
 
   /* ---------------- BUTTON SEARCH ---------------- */
   const handleSearch = async () => {
@@ -65,16 +65,23 @@ const PostgraduateStudyOptions: React.FC = () => {
 
   /* ---------------- UI ---------------- */
   return (
-    <div className="w-full max-w-3xl mx-auto p-6 md:pt-20">
-      <div className="text-center mb-10">
-        <h2 className="text-3xl md:text-4xl font-bold text-[#222222]">
+    <section
+      id="pg-programmes"
+      aria-labelledby="pg-programmes-heading"
+      className="mx-auto w-full max-w-3xl p-6 md:pt-20"
+    >
+      <div className="mb-10 text-center">
+        <h2
+          id="pg-programmes-heading"
+          className="text-3xl font-bold text-[#222222] md:text-4xl"
+        >
           Postgraduate Degrees
         </h2>
         <span className="block h-1 w-20 bg-blue-600 mx-auto mt-2 rounded-sm"></span>
         <p className="text-lg text-[#082952] max-w-3xl mx-auto md:mt-4">
-            Choose from our range of postgraduate programs designed to prepare you for success 
-            in your chosen career while contributing to the development of the Solomon Islands.
-          </p>
+          Choose from our range of postgraduate programs designed to prepare you for success
+          in your chosen career while contributing to the development of the Solomon Islands.
+        </p>
       </div>
 
       <label className="text-lg font-medium text-[#222222]">
@@ -108,61 +115,63 @@ const PostgraduateStudyOptions: React.FC = () => {
         </div>
       )}
 
-          {results.map((programme) => (
-            <div
-              key={programme._id}
-              onClick={() =>
-                navigate(`/programme/${programme.programme_code}`, {
-                  state: {
-                    programme_name: programme.programme_name,
-                    programme_code: programme.programme_code,
-                    programme_description: programme.programme_description,
-                    SIQF_level: programme.SIQF_level,
-                    programme_faculty: programme.programme_faculty,
-                    programme_department: programme.programme_department,
-                    programme_credits: programme.programme_credits,
-                    programme_entry_requirement: programme.programme_entry_requirement,
-                    programme_year: programme.programme_year,
-                    programme_study_type: programme.programme_study_type,
-                    programme_location: programme.programme_location,
-                    programme_study_period: programme.programme_study_period,
-                    programme_english_requirement: programme.programme_english_requirement,
-                  },
-                })
-              }
-              className="bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer hover:shadow-xl transition-shadow"
-            >
-              {programme.programme_image && (
-                <img
-                  src={programme.programme_image}
-                  alt={programme.programme_name}
-                  className="w-full h-56 object-cover"
-                />
-              )}
+      <div className="mt-6 space-y-6">
+        {results.map((programme) => (
+        <div
+          key={programme._id}
+          onClick={() =>
+            navigate(`/programme/${programme.programme_code}`, {
+              state: {
+                programme_name: programme.programme_name,
+                programme_code: programme.programme_code,
+                programme_description: programme.programme_description,
+                SIQF_level: programme.SIQF_level,
+                programme_faculty: programme.programme_faculty,
+                programme_department: programme.programme_department,
+                programme_credits: programme.programme_credits,
+                programme_entry_requirement: programme.programme_entry_requirement,
+                programme_year: programme.programme_year,
+                programme_study_type: programme.programme_study_type,
+                programme_location: programme.programme_location,
+                programme_study_period: programme.programme_study_period,
+                programme_english_requirement: programme.programme_english_requirement,
+              },
+            })
+          }
+          className="bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer hover:shadow-xl transition-shadow"
+        >
+          {programme.programme_image && (
+            <img
+              src={programme.programme_image}
+              alt={programme.programme_name}
+              className="w-full h-56 object-cover"
+            />
+          )}
 
-              <div className="p-6">
-                <h3 className="text-2xl font-semibold text-gray-800">
-                  {programme.programme_name}
-                </h3>
+          <div className="p-6">
+            <h3 className="text-2xl font-semibold text-gray-800">
+              {programme.programme_name}
+            </h3>
 
-                {programme.programme_description && (
-                  <p className="mt-2 text-gray-600 line-clamp-3">
-                    {programme.programme_description}
-                  </p>
-                )}
+            {programme.programme_description && (
+              <p className="mt-2 text-gray-600 line-clamp-3">
+                {programme.programme_description}
+              </p>
+            )}
 
-                <p className="mt-4 text-blue-600 font-medium">
-                  Credits: {programme.programme_credits}
-                </p>
+            <p className="mt-4 text-blue-600 font-medium">
+              Credits: {programme.programme_credits}
+            </p>
 
-                <p className="mt-2 text-blue-600 font-medium">
-                  Availability: {programme.programme_study_period}
-                </p>
-              </div>
-            </div>
-          ))}
-
+            <p className="mt-2 text-blue-600 font-medium">
+              Availability: {programme.programme_study_period}
+            </p>
+          </div>
         </div>
+      ))}
+      </div>
+
+    </section>
   );
 };
 

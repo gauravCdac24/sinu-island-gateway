@@ -15,7 +15,7 @@ interface Unit {
     unit_credits: string;
 }
 
-const API_BASE = "http://10.80.210.65:7000";
+const API_BASE = import.meta.env.VITE_API_URL_7000 || "http://localhost:7000";
 
 const ProgrammeStructure = () => {
     const { state } = useLocation();
@@ -120,7 +120,7 @@ const ProgrammeStructure = () => {
     return (
         <Card className="w-full md:mb-20 shadow-lg border border-gray-200 bg-black/10 duration-300 ease-in-out hover:scale-102">
             <CardContent>
-                <section id="programme-overview" className="w-full">
+                <section className="w-full" aria-label="Programme structure">
                     <div className="max-w-5xl mx-auto px-4 py-8">
                         <h2 className="text-3xl md:text-2xl font-bold text-[#222222] mb-6">
                             Program Structure

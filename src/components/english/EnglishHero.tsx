@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 import { GraduationCap, Globe, BookOpen } from 'lucide-react';
 
 const EnglishHero = () => {
@@ -33,8 +34,8 @@ const EnglishHero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button className="bg-[#ffb703] text-[#082952] hover:bg-[#d7a12c] px-8 py-3 text-lg">
-              Apply Now
+            <Button className="bg-[#ffb703] text-[#082952] hover:bg-[#d7a12c] px-8 py-3 text-lg" asChild>
+              <Link to="/apply">Apply Now</Link>
             </Button>
             <Button variant="outline" className="border-white text-white hover:bg-white hover:text-[#219ebc] px-8 py-3 text-lg">
               Download Brochure

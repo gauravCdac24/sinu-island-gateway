@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 import { GraduationCap, ArrowRight } from 'lucide-react';
 import OptimizedImage from '@/components/common/OptimizedImage';
 
@@ -57,9 +58,11 @@ const PrepHero = () => {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button className="bg-[#219ebc] hover:bg-[#219ebc]/90 text-white px-8 py-3 text-lg">
-                  Apply Now
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                <Button className="bg-[#219ebc] hover:bg-[#219ebc]/90 text-white px-8 py-3 text-lg" asChild>
+                  <Link to="/apply" className="inline-flex items-center">
+                    Apply Now
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
                 </Button>
                 <Button className="bg-white text-[#082952] hover:bg-[#082952] hover:text-white px-8 py-3 text-lg transition-colors">
                   Download Brochure

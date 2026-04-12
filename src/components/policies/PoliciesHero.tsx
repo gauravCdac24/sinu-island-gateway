@@ -3,6 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import OptimizedImage from '@/components/common/OptimizedImage';
 
+const scrollToPolicyLibrary = () => {
+  document.getElementById('policies-search')?.scrollIntoView({ behavior: 'smooth' });
+};
+
 const PoliciesHero = () => {
   return (
     <section className="bg-[#edf4ff] relative overflow-hidden">
@@ -66,7 +70,11 @@ const PoliciesHero = () => {
                   a non-school leaver.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start py-6">
-                  <Button className="bg-[#ffb703] hover:bg-[#082952] text-white px-8 py-3">
+                  <Button
+                    type="button"
+                    onClick={scrollToPolicyLibrary}
+                    className="bg-[#ffb703] hover:bg-[#082952] text-white px-8 py-3"
+                  >
                     Browse Policies
                   </Button>
                   <Button className="bg-white text-[#082952] hover:bg-[#082952] hover:text-white border-0 px-8 py-3 transition-all duration-300">

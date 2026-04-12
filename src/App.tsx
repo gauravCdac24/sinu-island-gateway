@@ -3,7 +3,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import ScrollToTop from "./components/common/ScrollToTop";
 import Index from "./pages/Index";
 import CourseFinder from "./pages/CourseFinder";
 import CourseCatalog from "./pages/CourseCatalog";
@@ -36,6 +37,7 @@ import SustainableDevelopment from "./pages/SustainableDevelopment";
 import IndigenousKnowledge from "./pages/IndigenousKnowledge";
 import PublicHealth from "./pages/PublicHealth";
 import ResearchCentersInstitutes from "./pages/ResearchCentersInstitutes";
+import ResearchImpact from "./pages/ResearchImpact";
 import Publications from "./pages/Publications";
 import ResearchGrants from "./pages/ResearchGrants";
 import EthicsCommittee from "./pages/EthicsCommittee";
@@ -51,6 +53,8 @@ import CampusAccommodation from "./pages/CampusAccommodation";
 import Transportation from "./pages/Transportation";
 import StaffLogin from "./pages/StaffLogin";
 import StudentLogin from "./pages/StudentLogin";
+import StudentForgotPassword from "./pages/StudentForgotPassword";
+import StudentResetPassword from "./pages/StudentResetPassword";
 import StudentPortal from "./pages/StudentsPortal";
 import ApplicantLogin from "./pages/ApplicantLogin";
 import NotFound from "./pages/NotFound";
@@ -58,6 +62,13 @@ import TafeEnrollment from "./pages/TafeEnrollment";
 import Policies from "./pages/Policies";
 import { ProgramDetails } from "./components/study-abroad/ProgramDetails";
 import ProgrammeDetails from "./pages/ProgrammeDetails";
+import ResearchEthics from "./pages/ResearchEthics";
+import Apply from "./pages/Apply";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminApplicationsList from "./pages/admin/AdminApplicationsList";
+import AdminApplicationDetail from "./pages/admin/AdminApplicationDetail";
 
 const queryClient = new QueryClient();
 
@@ -67,9 +78,11 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/course-finder" element={<CourseFinder />} />
+          <Route path="/apply" element={<Apply />} />
           <Route path="/course-catalog" element={<CourseCatalog />} />
           <Route path="/undergraduate-study" element={<UndergraduateStudy />} />
           <Route path="/postgraduate-study" element={<PostgraduateStudy />} />
@@ -100,6 +113,8 @@ const App = () => (
           <Route path="/indigenous-knowledge" element={<IndigenousKnowledge />} />
           <Route path="/public-health" element={<PublicHealth />} />
           <Route path="/research-centers-institutes" element={<ResearchCentersInstitutes />} />
+          <Route path="/research-impact" element={<ResearchImpact />} />
+          <Route path="/research-ethics" element={<ResearchEthics />} />
           <Route path="/publications" element={<Publications />} />
           <Route path="/research-grants" element={<ResearchGrants />} />
           <Route path="/ethics-committee" element={<EthicsCommittee />} />
@@ -115,7 +130,18 @@ const App = () => (
           <Route path="/transportation" element={<Transportation />} />
           <Route path="/staff-login" element={<StaffLogin />} />
           <Route path="/student-login" element={<StudentLogin />} />
+          <Route path="/student-forgot-password" element={<StudentForgotPassword />} />
+          <Route path="/student-reset-password" element={<StudentResetPassword />} />
           <Route path="/student-portal" element={<StudentPortal />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Navigate to="/admin/dashboard" replace />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="applied" element={<AdminApplicationsList status="pending" />} />
+            <Route path="accepted" element={<AdminApplicationsList status="approved" />} />
+            <Route path="rejected" element={<AdminApplicationsList status="rejected" />} />
+            <Route path="application/:id" element={<AdminApplicationDetail />} />
+          </Route>
           <Route path="/applicant-login" element={<ApplicantLogin />} />
           <Route path="/tafe-enroll" element={<TafeEnrollment />} />
           <Route path="/policies-procedures" element={<Policies/>}/>

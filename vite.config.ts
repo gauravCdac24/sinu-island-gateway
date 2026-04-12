@@ -10,20 +10,28 @@ export default defineConfig({
     strictPort: true,   // Don't try other ports
     cors: true,         // Enable CORS
     hmr: {
-      host: '10.80.210.65',
+      host: 'localhost',
       port: 3000
     },
+    // When VITE_API_URL=/api, dev requests hit the Express app (default port 7000)
+    proxy: {
+      '/api': {
+        target: process.env.VITE_DEV_API_TARGET || 'http://localhost:7000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '') || '/',
+      },
     },
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, './src')
-      }
-    },
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  },
   preview: {
     port: 3000,
     host: '0.0.0.0'
   },
-    build: {
+  build: {
     sourcemap: false
   }
 })

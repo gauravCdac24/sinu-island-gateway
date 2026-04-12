@@ -10,38 +10,42 @@ const HeaderLogo: React.FC<HeaderLogoProps> = ({ isScrolled, handleLogoClick }) 
   return (
     <div
       className={`
-        flex  items-center justify-center text-center 
+        flex items-center justify-center text-center
         transition-all duration-500 ease-in-out
-        ${isScrolled ? "scale-100 opacity-100  pl-10" : "scale-100 opacity-100 pt-0 flex-col"}
+        ${isScrolled ? 'flex-row shrink-0' : 'flex-col pt-0'}
       `}
     >
-      {/* Logo */}
       <Link
         to="/"
         onClick={handleLogoClick}
-        className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24"
+        className={
+          isScrolled
+            ? 'h-12 w-12 shrink-0 sm:h-14 sm:w-14'
+            : 'h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24'
+        }
       >
         <img
           src="/lovable-uploads/e89a9d15-f230-44b8-8ecb-322ac2085582.png"
           alt="SINU Logo"
-          className="w-full h-full object-contain"
+          className="h-full w-full object-contain"
         />
       </Link>
 
-      {/* Text below logo (always two lines) */}
       <div
         className={`
           mt-2 w-full max-w-xs sm:max-w-sm md:max-w-md
           transition-opacity duration-500 ease-in-out
-          ${isScrolled ? "opacity-0 pointer-events-none" : "opacity-100"}
+          ${isScrolled ? 'hidden' : 'opacity-100'}
         `}
       >
-        <h1 className="font-bold text-sm sm:text-base md:text-xl leading-tight text-center text-[#222]">
-          Solomon Islands
-        </h1>
-        <h1 className="font-bold text-sm sm:text-base md:text-xl leading-tight text-center text-[#222]">
-          National University
-        </h1>
+        <div className="mx-auto px-2 sm:px-3">
+          <p className="text-center text-sm font-bold leading-snug tracking-wide text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.95),0_0_1rem_rgba(0,0,0,0.5)] sm:text-base md:text-lg">
+            Solomon Islands
+          </p>
+          <p className="mt-0.5 text-center text-sm font-bold leading-snug tracking-wide text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.95),0_0_1rem_rgba(0,0,0,0.5)] sm:text-base md:text-lg">
+            National University
+          </p>
+        </div>
       </div>
     </div>
   );

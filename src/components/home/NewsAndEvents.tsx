@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { getNews, getEvents, urlFor } from '../../../sanity/lib/sanity';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
-// Utility to format date
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   const day = date.getDate();
@@ -42,19 +43,31 @@ const ScrollableCardRow: React.FC<{ cards: any[] }> = ({ cards }) => {
   }, [direction, isPaused]);
 
   const getImageSrc = (image: { sanityImage?: any; imageUrl?: string }) => {
-    if (image?.sanityImage) {
-      return urlFor(image.sanityImage).url();
-    }
-    if (image?.imageUrl) {
-      return image.imageUrl;
-    }
+    if (image?.sanityImage) return urlFor(image.sanityImage).url();
+    if (image?.imageUrl) return image.imageUrl;
     return '';
+  };
+
+  const CardLink: React.FC<{ href?: string; children: React.ReactNode }> = ({ href, children }) => {
+    if (!href || href === '#') return <>{children}</>;
+    if (href.startsWith('http')) {
+      return (
+        <a href={href} target="_blank" rel="noopener noreferrer" className="contents">
+          {children}
+        </a>
+      );
+    }
+    return (
+      <Link to={href} className="contents">
+        {children}
+      </Link>
+    );
   };
 
   return (
     <div
       ref={scrollRef}
-      className="w-screen flex overflow-x-auto space-x-6 py-6 scroll-smooth scrollbar-hide "
+      className="-mx-4 flex max-w-full gap-4 overflow-x-auto scroll-smooth px-4 pb-2 pt-2 sm:gap-5 sm:px-6 md:px-8 scrollbar-hide"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -62,40 +75,35 @@ const ScrollableCardRow: React.FC<{ cards: any[] }> = ({ cards }) => {
         const { day, month } = formatDate(card.date);
 
         return (
-          <div
-            key={index}
-            className="min-w-[280px] max-w-[280px]  shrink-0 bg-white border-[#22a2bf] rounded shadow hover:shadow-md transition duration-300 flex flex-col"
-          >
-            <img
-              src={getImageSrc(card.image)}
-              alt={card.title}
-              className="h-44 w-full object-cover rounded-t"
-            />
-
-            {/* Date Block */}
-            <div className="px-4 pt-4">
-              <div className="inline-block text-center border border-blue-600 rounded-md px-3 py-1">
-                <div className="text-lg font-bold text-blue-600 leading-tight">{day}</div>
-                <div className="text-xs font-medium text-blue-600 tracking-wider">{month}</div>
+          <CardLink key={index} href={card.link}>
+            <article className="flex w-[min(78vw,300px)] shrink-0 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md transition hover:shadow-lg sm:w-[300px]">
+              <div className="relative h-48 w-full overflow-hidden">
+                <img
+                  src={getImageSrc(card.image)}
+                  alt=""
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
               </div>
-            </div>
-
-            <div className="p-4 flex flex-col justify-between flex-grow">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">{card.title}</h3>
-                <p className="text-sm text-gray-600">{card.description}</p>
+              <div className="px-4 pt-4">
+                <div className="inline-flex flex-col rounded-lg border border-university-blue/40 bg-university-light-blue/20 px-3 py-1.5 text-center">
+                  <span className="text-lg font-bold leading-none text-university-blue">{day}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-university-dark-gray">
+                    {month}
+                  </span>
+                </div>
               </div>
-              <div className="mt-4">
-                <a
-                  href={card.link}
-                  className="inline-flex items-center text-[#035ac5ff] hover:text-blue-800 font-medium"
-                >
-                  Read More
+              <div className="flex flex-1 flex-col p-4 pt-2">
+                <h3 className="text-base font-bold text-university-dark-gray">{card.title}</h3>
+                <p className="mt-2 line-clamp-3 flex-1 text-sm text-gray-600">{card.description}</p>
+                <span className="mt-4 inline-flex items-center text-sm font-semibold text-university-blue">
+                  Read more
                   <ArrowRight className="ml-2 h-4 w-4" />
-                </a>
+                </span>
               </div>
-            </div>
-          </div>
+            </article>
+          </CardLink>
         );
       })}
     </div>
@@ -113,24 +121,46 @@ const NewsEventsSection: React.FC = () => {
   }, []);
 
   return (
-    <section className="py-10  bg-black/40 md:pt-30 pt-10">
-      {/* Toggle Buttons */}
-      <div className="max-w-7xl mx-auto flex justify-center gap-4 mb-8 px-4 ">
-        {['news', 'events'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as 'news' | 'events')}
-            className={`px-5 py-2 rounded font-medium transition-colors duration-200 
-              ${activeTab === tab
-                ? 'bg-[#035ac5ff]/90 text-white  '
-                : 'bg-transparent text-blue-1200 hover:bg-blue-100'}`}
-          >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
-          </button>
-        ))}
+    <section className="bg-university-light-gray/70 py-12 md:py-20" aria-label="News and events">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-8 flex flex-col items-center justify-between gap-4 sm:flex-row sm:items-end">
+          <div className="text-center sm:text-left">
+            <span className="text-xs font-bold uppercase tracking-widest text-university-blue">
+              Stay in the loop
+            </span>
+            <h2 className="mt-2 text-3xl font-bold text-university-dark-gray sm:text-4xl">
+              News &amp; events
+            </h2>
+            <p className="mt-2 max-w-xl text-sm text-gray-600 sm:text-base">
+              Deadlines, celebrations, and what is happening on campus.
+            </p>
+          </div>
+          <Button variant="outline" className="border-university-blue shrink-0" asChild>
+            <Link to="/campus-events" className="inline-flex items-center gap-2">
+              Full events listing
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+
+        <div className="mb-6 flex justify-center gap-2 sm:justify-start">
+          {(['news', 'events'] as const).map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => setActiveTab(tab)}
+              className={`rounded-full px-5 py-2.5 text-sm font-bold transition ${
+                activeTab === tab
+                  ? 'bg-university-dark-gray text-white shadow-md'
+                  : 'bg-white text-university-dark-gray ring-1 ring-gray-200 hover:ring-university-blue/40'
+              }`}
+            >
+              {tab === 'news' ? 'News' : 'Events'}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Full-width scrollable card row */}
       {activeTab === 'news' ? <ScrollableCardRow cards={news} /> : <ScrollableCardRow cards={events} />}
     </section>
   );

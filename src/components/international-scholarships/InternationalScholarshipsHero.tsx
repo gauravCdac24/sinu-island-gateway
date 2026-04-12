@@ -1,4 +1,5 @@
 import internationalScholarshipsHero from "@/assets/international-scholarships-hero.jpg";
+import { Link } from "react-router-dom";
 
 export function InternationalScholarshipsHero() {
   return (
@@ -18,9 +19,12 @@ export function InternationalScholarshipsHero() {
           <button className="px-8 py-4 bg-white text-[#082952] font-semibold rounded-lg hover:bg-gray-100 transition-colors text-lg">
             Explore Scholarships
           </button>
-          <button className="px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-[#082952] transition-colors text-lg">
+          <Link
+            to="/apply"
+            className="px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-[#082952] transition-colors text-lg inline-block text-center"
+          >
             Apply Now
-          </button>
+          </Link>
         </div>
       </div>
     </section>

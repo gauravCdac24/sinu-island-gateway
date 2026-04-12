@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, Calendar, FileText, CreditCard } from 'lucide-react';
 import OptimizedImage from '@/components/common/OptimizedImage';
@@ -70,9 +71,15 @@ const EnrollmentSection = () => {
                 <CardDescription className="text-[#082952]">{step.description}</CardDescription>
               </CardHeader>
               <CardContent>
-                <Button variant="outline" size="sm" className="border-[#035ac5ff] text-[#035ac5ff] hover:bg-[#035ac5ff] hover:text-white">
-                  {step.action}
-                </Button>
+                {step.action === "Apply Now" ? (
+                  <Button variant="outline" size="sm" className="border-[#035ac5ff] text-[#035ac5ff] hover:bg-[#035ac5ff] hover:text-white" asChild>
+                    <Link to="/apply">{step.action}</Link>
+                  </Button>
+                ) : (
+                  <Button variant="outline" size="sm" className="border-[#035ac5ff] text-[#035ac5ff] hover:bg-[#035ac5ff] hover:text-white">
+                    {step.action}
+                  </Button>
+                )}
               </CardContent>
             </Card>
           ))}

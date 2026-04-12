@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 import { Calendar, DollarSign, Users } from 'lucide-react';
 
 const FeaturedScholarshipsSection = () => {
@@ -72,8 +73,8 @@ const FeaturedScholarshipsSection = () => {
                     <span className="text-sm">{scholarship.eligibility}</span>
                   </div>
                 </div>
-                <Button className="w-full bg-[#219ebc] hover:bg-[#219ebc]/90 text-white">
-                  Apply Now
+                <Button className="w-full bg-[#219ebc] hover:bg-[#219ebc]/90 text-white" asChild>
+                  <Link to="/apply">Apply Now</Link>
                 </Button>
               </CardContent>
             </Card>

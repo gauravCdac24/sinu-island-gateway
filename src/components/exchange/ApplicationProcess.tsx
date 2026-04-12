@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 import { Users, FileText, Send, University, Plane } from 'lucide-react';
 
 const ApplicationProcess = () => {
@@ -139,8 +140,9 @@ const ApplicationProcess = () => {
             <Button 
               size="lg" 
               className="bg-[#219ebc] hover:bg-[#082952] text-white px-8 py-3 mr-4"
+              asChild
             >
-              Apply Now
+              <Link to="/apply">Apply Now</Link>
             </Button>
             <Button 
               size="lg" 

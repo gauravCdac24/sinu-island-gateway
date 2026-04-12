@@ -23,7 +23,7 @@ interface Programme {
   programme_units: string;
 }
 
-const API_BASE = "http://10.80.210.65:7000";
+const API_BASE = import.meta.env.VITE_API_URL_7000 || "http://localhost:7000";
 
 const FACULTIES = [
   "Faculty of Science and Technology",

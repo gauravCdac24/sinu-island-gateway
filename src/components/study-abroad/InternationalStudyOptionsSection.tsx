@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Microscope, Calculator, Gavel, Stethoscope, Palette, Globe, ArrowRight } from 'lucide-react';
 import OptimizedImage from '@/components/common/OptimizedImage';
 import { Button } from '../ui/button';
+import { Link } from 'react-router-dom';
 
 const InternationalStudyOptionsSection = () => {
   const studyOptions = [
@@ -90,9 +91,11 @@ const InternationalStudyOptionsSection = () => {
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 w-full">
             <h2 className="text-white text-3xl font-semibold mb-0 md:mb-0 md:mr-6">Got a question?</h2>
             <div className="flex gap-4">
-              <Button className="bg-white text-blue-600 font-medium px-5 py-2 rounded hover:bg-blue-50 transition">Apply Now
-                <ArrowRight className="ml-2 h-4 w-4" />
-                
+              <Button className="bg-white text-blue-600 font-medium px-5 py-2 rounded hover:bg-blue-50 transition" asChild>
+                <Link to="/apply" className="inline-flex items-center">
+                  Apply Now
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
               </Button>
               <Button className="bg-blue-800 text-white font-medium px-5 py-2 rounded hover:bg-blue-700 transition">Contact Us
                 <ArrowRight className="ml-2 h-4 w-4" />

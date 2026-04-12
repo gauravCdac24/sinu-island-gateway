@@ -29,10 +29,9 @@ const AdmissionRequirements = () => {
         <InternationalStudyOptions/>
         <InternationalFeaturedPrograms />
         <InternationalStudyOptionsSection />
-        <InternationalKeyDates />
         <StudentExperience />
         <InternationalNewsEvents />
-      </main>
+      </main> 
       <Footer />
       <BackToTop />
     </div>

@@ -1,4 +1,5 @@
 import studyAbroadHero from "@/assets/study-abroad-hero.jpg";
+import { Link } from "react-router-dom";
 
 export function StudyAbroadHero() {
   return (
@@ -15,9 +16,12 @@ export function StudyAbroadHero() {
           Experience world-class education at Solomon Islands National University and broaden your global perspective
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button className="px-8 py-4 bg-white text-[#082952] font-semibold rounded-lg hover:bg-gray-100 transition-colors text-lg">
+          <Link
+            to="/apply"
+            className="px-8 py-4 bg-white text-[#082952] font-semibold rounded-lg hover:bg-gray-100 transition-colors text-lg inline-block text-center"
+          >
             Apply Now
-          </button>
+          </Link>
           <button className="px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-[#082952] transition-colors text-lg">
             Learn More
           </button>

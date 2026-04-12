@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { GraduationCap, BookOpen, Users, Award } from 'lucide-react';
 
@@ -159,9 +160,12 @@ const EducationPrograms: React.FC = () => {
               <button className="bg-white text-[#082952] font-semibold px-8 py-3 rounded-lg hover:bg-gray-100 transition-colors">
                 View Program Details
               </button>
-              <button className="bg-[#ffb703] hover:bg-[#d7a12c] text-[#082952] font-semibold px-8 py-3 rounded-lg transition-colors">
+              <Link
+                to="/apply"
+                className="bg-[#ffb703] hover:bg-[#d7a12c] text-[#082952] font-semibold px-8 py-3 rounded-lg transition-colors inline-block text-center"
+              >
                 Apply Now
-              </button>
+              </Link>
             </div>
           </div>
         </div>

@@ -1,93 +1,71 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import OptimizedImage from '@/components/common/OptimizedImage';
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import OptimizedImage from "@/components/common/OptimizedImage";
 
 const DistanceHero = () => {
-  const navigate = useNavigate();
+  const scrollToCenters = () => {
+    document.getElementById("find-center")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
-    <section className="bg-[#edf4ff] relative overflow-hidden">
-      {/* Background Image Container with Responsive Aspect Ratios */}
-      <div className="relative w-full">
-        {/* Desktop: 16:9 aspect ratio */}
-        <div className="hidden lg:block h-[800px] w-full">
-          <OptimizedImage
-            src="/public/lovable-uploads/f8426703-80a1-4c9e-9221-91ae920e4fe2.jpg"
-            alt="SINU students celebrating achievement"
-            className="w-full h-full object-cover"
-            objectFit="cover"
-          />
-        </div>
-
-        {/* Tablet: 4:3 aspect ratio */}
-        <div className="hidden md:block lg:hidden aspect-[4/3] w-full">
-          <OptimizedImage
-            src="/public/lovable-uploads/f8426703-80a1-4c9e-9221-91ae920e4fe2.jpg"
-            alt="SINU students celebrating achievement"
-            className="w-full h-full object-cover"
-            objectFit="cover"
-          />
-        </div>
-
-        {/* Mobile: 9:16 aspect ratio */}
-        <div className="block md:hidden aspect-[9/16] w-full">
-          <OptimizedImage
-            src="/public/lovable-uploads/f8426703-80a1-4c9e-9221-91ae920e4fe2.jpg"
-            alt="SINU students celebrating achievement"
-            className="w-full h-full object-cover"
-            objectFit="cover"
-          />
-        </div>
-
-        {/* Content Overlay */}
+    <section
+      className="relative isolate min-h-[min(88vh,820px)] overflow-hidden bg-[#082952]"
+      aria-labelledby="dfl-hero-title"
+    >
+      <div className="absolute inset-0" aria-hidden>
+        <OptimizedImage
+          src="/lovable-uploads/f8426703-80a1-4c9e-9221-91ae920e4fe2.jpg"
+          alt=""
+          className="h-full w-full object-cover"
+          objectFit="cover"
+        />
         <div
-          className="
-            absolute inset-0 flex 
-            items-center justify-center text-center
-            md:items-end md:justify-start md:text-left
-            p-4 md:p-12
-          "
-        >
-          <div className="relative z-10 max-w-4xl mt-40">
-            <h1
-              className="text-4xl md:text-5xl font-bold text-white  text-center bg-black/50 inline-block px-4 py-2"
-              style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}
+          className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/35"
+          aria-hidden
+        />
+      </div>
+
+      <div className="relative z-10 flex min-h-[min(88vh,820px)] flex-col justify-end px-4 pb-10 pt-24 sm:px-8 md:px-12 md:pb-14 lg:px-16">
+        <div className="mx-auto w-full max-w-3xl text-center md:mx-0 md:text-left">
+          <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-[#8ecae6]">
+            Distance & flexible learning
+          </p>
+          <h1
+            id="dfl-hero-title"
+            className="text-4xl font-bold leading-tight text-white drop-shadow-md sm:text-5xl"
+          >
+            Study where you are, with support close to home
+          </h1>
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-white/95 md:text-lg">
+            Flexible delivery and learning centres across the Solomon Islands help you balance study
+            with work and family. Apply online, browse programmes, or find a centre near you.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+            <Button
+              asChild
+              size="lg"
+              className="min-h-[48px] bg-[#ffb703] px-8 text-base font-semibold text-[#082952] shadow-lg hover:bg-[#e5a500] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#082952]"
             >
-              Student Learning Support
-            </h1>
-
-            <Card className="bg-[#22a2bf]/50 border-0 max-w-2xl">
-              <CardContent className="p-6 md:p-8">
-                <h3 className="text-xl md:text-3xl font-semibold text-white mb-4">
-                  Highly flexible, tailored for online learning and close to your home.
-                </h3>
-                <p className="text-sm text-white leading-relaxed">
-                  Studying online may feel overwhelming, but we're here to help you. You'll have access to all our wide range of support services. Ask our Distance and Flexible Learning Center Support Staff.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start py-6">
-                  <Button
-                    onClick={() => {
-                      const section = document.getElementById("find-center");
-                      if (section) {
-                        section.scrollIntoView({ behavior: 'smooth' });
-                      }
-                    }}
-                    className="bg-[#ffb703] hover:bg-[#082952] text-white px-8 py-3"
-                  >
-                    Find a Center
-                  </Button>
-
-                  <Button
-                    onClick={() => navigate("/course-finder")}
-                    className="bg-white text-[#082952] hover:bg-[#082952] hover:text-white border-0 px-8 py-3 transition-all duration-300"
-                  >
-                    Browse Programs
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+              <Link to="/apply">Apply now</Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="min-h-[48px] border-2 border-white/90 bg-white/10 px-8 text-base font-semibold text-white backdrop-blur-sm hover:bg-white hover:text-[#082952] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#082952]"
+            >
+              <Link to="/course-finder">Find a programme</Link>
+            </Button>
+            <Button
+              type="button"
+              size="lg"
+              variant="outline"
+              onClick={scrollToCenters}
+              className="min-h-[48px] border-2 border-white/90 bg-white/10 px-8 text-base font-semibold text-white backdrop-blur-sm hover:bg-white hover:text-[#082952] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#082952]"
+            >
+              Learning centres
+            </Button>
           </div>
         </div>
       </div>

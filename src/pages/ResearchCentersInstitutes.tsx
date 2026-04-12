@@ -7,6 +7,7 @@ import ResearchOverview from '@/components/research-centers/ResearchOverview';
 import ResearchInstitutes from '@/components/research-centers/ResearchInstitutes';
 import ResearchCenters from '@/components/research-centers/ResearchCenters';
 import ResearchThemes from '@/components/research-centers/ResearchThemes';
+import ResearchCategoryTabs from '@/components/research-centers/ResearchCategoryTab';
 
 const ResearchCentersInstitutes = () => {
   return (
@@ -14,10 +15,8 @@ const ResearchCentersInstitutes = () => {
       <Header />
       <main className="flex-1">
         <ResearchCentersHero />
+        <ResearchCategoryTabs />
         <ResearchOverview />
-        <ResearchInstitutes />
-        <ResearchCenters />
-        <ResearchThemes />
       </main>
       <Footer />
       <BackToTop />

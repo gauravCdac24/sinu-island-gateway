@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { getstudywithus, urlFor } from '../../../sanity/lib/sanity';
-import HeaderLogo from '../layout/HeaderLogo';
+import OptimizedImage from '@/components/common/OptimizedImage';
 import { Link } from 'react-router-dom';
 
-export default function StudyWithUs() {
+export default function PoliciesHome() {
   const [studywithus, setStudyWithUs] = useState<any[]>([]);
 
   const getImageSrc = (image: { sanityImage?: any; imageUrl?: string }) => {
@@ -18,66 +19,78 @@ export default function StudyWithUs() {
   }, []);
 
   return (
-    // Responsive top padding: mobile pt-10, desktop pt-32
-    <section id="policies-home" className="pt-10 md:pt-10 bg-black/40" >
-      {studywithus 
-      .filter(program => program.title === "Study With Us in Policies Pages")
-      .map((program, index) => (
-        <div
-          key={index}
-          className="relative flex flex-col md:flex-row items-center justify-center min-h-screen px-4 sm:px-6 md:px-20 lg:px-24 py-12 gap-8"
-        >
-          {/* Content Box */}
+    <section id="policies-home" className="bg-white border-b border-gray-100">
+      {studywithus
+        .filter((program) => program.title === 'Study With Us in Policies Pages')
+        .map((program, index) => (
           <div
-            className="
-              relative z-10
-              bg-[#fff]/95 rounded-xl shadow-lg 
-              p-6 sm:p-8 md:p-10 
-              w-full max-w-s text-center md:text-left
-              md:relative md:top-1/2 md:left-20 md:transform md:-translate-y-1 md:-translate-x-1
-            "
+            key={index}
+            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-20"
           >
-            <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold mb-4">
-              {"SINU Policies"}
-              <span className="block h-1 w-20 bg-blue-600 mx-auto md:mx-0 mt-2 rounded-sm"></span>
+            <div className="flex flex-col lg:flex-row items-stretch gap-10 lg:gap-14">
+              <Card className="flex-1 border border-gray-200 shadow-md overflow-hidden lg:max-w-xl">
+                <CardContent className="p-6 sm:p-8 md:p-10">
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="h-1 w-10 bg-university-gold rounded-full" />
+                    <span className="text-university-blue text-sm font-semibold uppercase tracking-widest">
+                      About
+                    </span>
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-university-dark-gray mb-4">
+                    SINU policies
+                    <span className="block h-1 w-16 bg-university-blue mt-3 rounded-full" />
+                  </h2>
+                  <p className="text-gray-700 leading-relaxed text-justify text-sm sm:text-base">
+                    {program.description}
+                  </p>
+                  <Button
+                    className="mt-8 bg-university-blue hover:bg-university-dark-gray text-white"
+                    type="button"
+                    onClick={() =>
+                      document
+                        .getElementById('policies-search')
+                        ?.scrollIntoView({ behavior: 'smooth' })
+                    }
+                  >
+                    Go to policy library
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <div className="flex-1 min-h-[280px] lg:min-h-[360px] rounded-xl overflow-hidden shadow-lg border border-gray-200/80">
+                <OptimizedImage
+                  src={getImageSrc(program.image)}
+                  alt={program.title || 'SINU campus and community'}
+                  className="w-full h-full min-h-[280px] lg:min-h-[360px]"
+                  objectFit="cover"
+                  width={900}
+                  height={600}
+                />
+              </div>
+            </div>
+          </div>
+        ))}
+
+      <div className="bg-university-blue text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div>
+            <h2 className="text-xl md:text-2xl font-semibold text-white">
+              Questions about a policy?
             </h2>
-            <p className="mb-6 text-gray-800 text-justify sm:text-sm md:text-base lg:text-lg">
-              {program.description}
+            <p className="text-white/85 text-sm md:text-base mt-2 max-w-xl">
+              Contact the relevant faculty or corporate office, or reach out through our main
+              enquiry channels.
             </p>
           </div>
-
-          {/* Image */}
-          <div className="relative w-full md:w-auto">
-            <img
-              src={getImageSrc(program.image)}
-              alt={program.title}
-              className="
-                h-80 sm:h-96 md:h-[34rem] lg:h-[40rem] 
-                w-full md:w-auto 
-                object-cover rounded-xl 
-                shadow-lg 
-                transition-transform duration-300 ease-in-out hover:scale-105
-              "
-            />
-          </div>
+          <Button
+            size="lg"
+            className="bg-university-gold hover:bg-university-gold/90 text-university-dark-gray font-semibold shrink-0"
+            asChild
+          >
+            <Link to="/undergraduate-study">Contact us</Link>
+          </Button>
         </div>
-      ))}
-      <div className="w-full bg-[#22a2bf] shadow-md transition-all duration-300 ease-in-out md:mt-20">
-      {/* Reduced height only on desktop */}
-      <div className="container mx-auto md:px-40 flex items-center justify-between py-5 lg:py-6">
-      <h2 className="text-black text-2xl md:text-3xl font-semibold">
-        Want to know more about SINU Policy? 
-        <span className="block md:h-1 md:w-20 bg-blue-600 mx-auto mt-2 rounded-sm"></span>
-      </h2>
-                    <Button
-                      size="lg"
-                      className="bg-[#ffb703] hover:bg-blue-600 hover:text-black text-[#082952] font-bold text-base sm:text-lg md:text-xl px-4 sm:px-9 md:px-20 py-2 sm:py-3 md:py-4 w-full sm:w-auto"
-                      asChild
-                    >
-                    <Link to="/undergraduate-study">Contact Us</Link>
-                    </Button>
-    </div>  
-    </div>
+      </div>
     </section>
   );
 }

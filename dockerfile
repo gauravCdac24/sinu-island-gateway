@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -11,9 +11,22 @@ RUN npm i
 # Copy all source code
 COPY . .
 
-# Expose ports
-EXPOSE 3000 
-EXPOSE 7000 
+# Build the Vite project (VITE_* must be set at build time for the client bundle)
+ARG MODE=production
+ARG VITE_API_URL=/api
+ENV VITE_API_URL=$VITE_API_URL
+RUN npm run build -- --mode $MODE
 
-# Start Vite dev server (for staging/development)
-CMD ["npm", "run", "dev", "--", "--host", "10.80.210.65", "--port", "3000"]
+# Serve stage using Nginx
+FROM nginx:alpine
+
+RUN apk add --no-cache wget
+
+# Copy built assets
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# The docker-compose files map the nginx configs
+EXPOSE 80
+EXPOSE 443
+
+CMD ["nginx", "-g", "daemon off;"]

@@ -3,8 +3,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 
-const MONGO_URI = process.env.MONGO_URI || "mongodb://0.0.0.0:27017/sinu_files";
-    console.log(MONGO_URI);
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/sinu_files";
+console.log(MONGO_URI);
 
 export const connectDB = async () => {
   try {
