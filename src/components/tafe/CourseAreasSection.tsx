@@ -6,6 +6,7 @@ import { Wrench, Stethoscope, Car, Cpu, Building, Users, ChefHat, Palette, Arrow
 import OptimizedImage from '../common/OptimizedImage';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useNavigate } from "react-router-dom";
+import { getApiUrl } from "@/lib/apiBase";
 
 interface Programme {
   _id: string;
@@ -26,8 +27,6 @@ interface Programme {
   programme_credits: number;
 }
 
-const API_BASE = import.meta.env.VITE_API_URL_7000 || "http://localhost:7000";
-
 const CourseAreasSection = () => {
   const [programmes, setProgrammes] = useState<Programme[]>([]);
     const [filteredProgrammes, setFilteredProgrammes] = useState<Programme[]>([]);
@@ -45,7 +44,7 @@ const CourseAreasSection = () => {
   
         console.log("Fetching programmes with params:", params.toString());
         const res = await fetch(
-          `${API_BASE}/programme_catalogue/search?${params.toString()}`
+          getApiUrl(`/programme_catalogue/search?${params.toString()}`)
         );
         console.log("Fetch response:", res);
         const json = await res.json();

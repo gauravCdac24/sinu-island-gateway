@@ -3,6 +3,7 @@ import { Card, CardContent } from "../ui/card";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react"; // You can use any icon library or CSS
+import { getApiUrl } from "@/lib/apiBase";
 
 interface Unit {
     _id: string;
@@ -14,8 +15,6 @@ interface Unit {
     unit_study_period: string;
     unit_credits: string;
 }
-
-const API_BASE = import.meta.env.VITE_API_URL_7000 || "http://localhost:7000";
 
 const ProgrammeStructure = () => {
     const { state } = useLocation();
@@ -59,7 +58,7 @@ const ProgrammeStructure = () => {
                     const params = new URLSearchParams();
                     params.append("programme_units", unit);
                     const res = await fetch(
-                        `${API_BASE}/unit_catalogues/code?${params.toString()}`
+                        getApiUrl(`/unit_catalogues/code?${params.toString()}`)
                     );
 
                     if (res.ok) {

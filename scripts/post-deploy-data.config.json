@@ -1,9 +1,9 @@
 {
-  "apiBase": "http://127.0.0.1:3000",
+  "apiBase": "http://10.80.210.65:3000",
   "skipExistingPolicyFilenames": true,
   "paths": {
-    "policyPdfsHostDir": "data/policies",
-    "programmesExcelHostPath": "",
-    "unitsExcelHostPath": ""
+    "policyPdfsHostDir": "/home/vboxuser/Downloads/policies",
+    "programmesExcelHostPath": "/home/vboxuser/Downloads/programmes.xlsx",
+    "unitsExcelHostPath": "/home/vboxuser/Downloads/units.xlsx"
   }
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import OptimizedImage from "@/components/common/OptimizedImage";
 import { useNavigate } from "react-router-dom";
+import { getApiUrl } from "@/lib/apiBase";
 
 interface Programme {
   _id: string;
@@ -21,8 +22,6 @@ interface Programme {
   SIQF_level: string;
   programme_credits: number;
 }
-
-const API_BASE = import.meta.env.VITE_API_URL_7000 || "http://localhost:7000";
 
 const FACULTIES = [
   "Faculty of Science and Technology",
@@ -54,7 +53,7 @@ const StudyOptionsSection = () => {
       params.append("programme_level", "Postgraduate");
       console.log("Fetching programmes with params:", params.toString());
       const res = await fetch(
-        `${API_BASE}/programme_catalogue/search?${params.toString()}`
+        getApiUrl(`/programme_catalogue/search?${params.toString()}`)
       );
       console.log("Fetch response:", res);
       const json = await res.json();

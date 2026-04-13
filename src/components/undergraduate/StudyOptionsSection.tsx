@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import OptimizedImage from "@/components/common/OptimizedImage";
 import { useNavigate } from "react-router-dom";
+import { getApiUrl } from "@/lib/apiBase";
 
 interface Programme {
   _id: string;
@@ -22,8 +23,6 @@ interface Programme {
   programme_credits: number;
   programme_units: string;
 }
-
-const API_BASE = import.meta.env.VITE_API_URL_7000 || "http://localhost:7000";
 
 const FACULTIES = [
   "Faculty of Science and Technology",
@@ -53,7 +52,7 @@ const StudyOptionsSection = () => {
 
       params.append("programme_level", "Undergraduate");
       const res = await fetch(
-        `${API_BASE}/programme_catalogue/search?${params.toString()}`
+        getApiUrl(`/programme_catalogue/search?${params.toString()}`)
       );
       const json = await res.json();
       const data = json.data || [];

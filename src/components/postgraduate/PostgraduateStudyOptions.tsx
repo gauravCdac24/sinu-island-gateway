@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getApiUrl } from "@/lib/apiBase";
 
 interface Programme {
   _id: string;
@@ -29,8 +30,6 @@ const PostgraduateStudyOptions: React.FC = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const navigate = useNavigate();
 
-  const API_BASE = import.meta.env.VITE_API_URL_7000 || "http://localhost:7000";
-
   /* ---------------- BUTTON SEARCH ---------------- */
   const handleSearch = async () => {
     const query = searchInput.trim();
@@ -46,7 +45,7 @@ const PostgraduateStudyOptions: React.FC = () => {
       });
       console.log("Searching with params:", params.toString());
       const res = await fetch(
-        `${API_BASE}/programme_catalogue/postgraduate_search?${params.toString()}`
+        getApiUrl(`/programme_catalogue/postgraduate_search?${params.toString()}`)
       );
 
       if (!res.ok) {

@@ -10,7 +10,7 @@ import { AlertTriangle, Search, Loader2, ChevronRight, BookOpen, MapPin } from "
 import ErrorBoundary from "@/components/common/ErrorBoundary";
 import OptimizedImage from "@/components/common/OptimizedImage";
 import { useNavigate } from "react-router-dom";
-import { getApiBaseUrl } from "@/lib/apiBase";
+import { getApiUrl } from "@/lib/apiBase";
 import { cn } from "@/lib/utils";
 
 type ProgrammeResult = {
@@ -53,8 +53,6 @@ const CourseFinder = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const navigate = useNavigate();
 
-  const API_BASE = getApiBaseUrl();
-
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY);
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -71,7 +69,7 @@ const CourseFinder = () => {
       const trimmedQuery = searchQuery.trim();
 
       if (trimmedQuery.length === 4) {
-        const res = await fetch(`${API_BASE}/programme_catalogue/code/${trimmedQuery}`);
+        const res = await fetch(getApiUrl(`/programme_catalogue/code/${trimmedQuery}`));
         if (!res.ok) {
           setResults([]);
           setError("Programme not found");
@@ -86,7 +84,7 @@ const CourseFinder = () => {
           programme_faculty: selectedFaculty,
         });
 
-        const res = await fetch(`${API_BASE}/programme_catalogue/search?${params.toString()}`);
+        const res = await fetch(getApiUrl(`/programme_catalogue/search?${params.toString()}`));
         if (!res.ok) {
           setResults([]);
           setError("No programmes found");

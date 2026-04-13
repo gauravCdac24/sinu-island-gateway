@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { getApiBaseUrl } from '@/lib/apiBase';
 
 export type PolicyCategoryId =
   | 'all'
@@ -83,16 +84,6 @@ const CATEGORY_BADGE_CLASS: Record<Exclude<PolicyCategoryId, 'all'>, string> = {
   general: 'bg-gray-100 text-gray-800 border-gray-200',
 };
 
-function getPolicyApiBase(): string {
-  const base = import.meta.env.VITE_API_URL;
-  if (base && String(base).trim()) {
-    return String(base).replace(/\/$/, '');
-  }
-  const host = import.meta.env.VITE_API_HOST || 'localhost';
-  const port = import.meta.env.VITE_API_PORT || '7000';
-  return `http://${host}:${port}`;
-}
-
 function inferCategory(filename: string): Exclude<PolicyCategoryId, 'all'> {
   const name = filename.toLowerCase();
   for (const rule of CATEGORY_RULES) {
@@ -122,7 +113,7 @@ export default function PoliciesSearch() {
   const [error, setError] = useState<string | null>(null);
   const [typeFilter, setTypeFilter] = useState<PolicyCategoryId>('all');
 
-  const apiBase = useMemo(() => getPolicyApiBase(), []);
+  const apiBase = useMemo(() => getApiBaseUrl(), []);
 
   const fetchPolicies = useCallback(
     async (searchQuery: string) => {

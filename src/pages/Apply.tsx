@@ -20,7 +20,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { getApiBaseUrl } from "@/lib/apiBase";
+import { getApiUrl } from "@/lib/apiBase";
 import {
   buildApplicationSummaryHtml,
   type ApplicationSnapshot,
@@ -173,7 +173,6 @@ function FileDropHint({
 }
 
 const Apply = () => {
-  const API_BASE = getApiBaseUrl();
   const [searchParams] = useSearchParams();
   const preselectCode = searchParams.get("code")?.trim() || "";
 
@@ -224,7 +223,7 @@ const Apply = () => {
           programme_level: "all",
           programme_faculty: "all",
         });
-        const res = await fetch(`${API_BASE}/programme_catalogue/search?${params}`);
+        const res = await fetch(getApiUrl(`/programme_catalogue/search?${params}`));
         if (!res.ok) throw new Error("Could not load programmes");
         const data = (await readJsonOrThrow(res)) as { data?: CatalogueRow[] };
         const rows = Array.isArray(data.data) ? data.data : [];
@@ -242,7 +241,7 @@ const Apply = () => {
     return () => {
       cancelled = true;
     };
-  }, [API_BASE]);
+  }, []);
 
   useEffect(() => {
     if (!preselectCode || catalogue.length === 0) return;
@@ -306,7 +305,7 @@ const Apply = () => {
       const email = values.email.trim().toLowerCase();
       const phone = values.phone.trim();
       try {
-        const res = await fetch(`${API_BASE}/student_applications/check-duplicate`, {
+        const res = await fetch(getApiUrl("/student_applications/check-duplicate"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, phone }),
@@ -378,7 +377,7 @@ const Apply = () => {
       return true;
     }
     return true;
-  }, [step, form, profileImage.length, studyDocuments.length, sopFiles.length, englishFiles.length, API_BASE]);
+  }, [step, form, profileImage.length, studyDocuments.length, sopFiles.length, englishFiles.length]);
 
   const goNext = async () => {
     const ok = await validateCurrentStep();
@@ -507,7 +506,7 @@ const Apply = () => {
 
     setSubmitting(true);
     try {
-      const res = await fetch(`${API_BASE}/student_applications`, {
+      const res = await fetch(getApiUrl("/student_applications"), {
         method: "POST",
         body: fd,
       });
