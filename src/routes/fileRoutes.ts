@@ -1,8 +1,8 @@
-
-import { Router } from "express";
+import { Router, type Request, type Response, type NextFunction } from "express";
 import multer from "multer";
 import PolicyFileModel from "../models/Policy_File.ts";
 import fs from "fs";
+import path from "path";
 import CoursesFiles from "../models/Courses_File.ts";
 import readXlsxFile from "read-excel-file/node";
 import UnitFile from "../models/Unit_File.ts";
@@ -14,6 +14,15 @@ const router = Router();
 
 // Multer in-memory storage
 const upload = multer({ storage: multer.memoryStorage() });
+
+/** Only parse multipart when needed so JSON { path } still works for server-side paths. */
+const multerSingleFile = (req: Request, res: Response, next: NextFunction) => {
+  const ct = req.headers["content-type"] || "";
+  if (ct.includes("multipart/form-data")) {
+    return upload.single("file")(req, res, next);
+  }
+  next();
+};
 
 const normalize = (value: string) =>
   value
@@ -60,6 +69,72 @@ router.post("/policy_files/upload-from-path", async (req, res) => {
     res.status(500).json({ error: "Failed to upload" });
   }
 });
+
+/** Only paths under this root (in the API container) are allowed. */
+const POLICY_SEED_ROOT = "/seed/policies";
+
+function isPathUnderPolicySeedRoot(resolvedDir: string): boolean {
+  const root = path.resolve(POLICY_SEED_ROOT);
+  const dir = path.resolve(resolvedDir);
+  return dir === root || dir.startsWith(root + path.sep);
+}
+
+router.post("/policy_files/seed-from-directory", async (req, res) => {
+  try {
+    const requested =
+      typeof req.body?.directory === "string" ? req.body.directory : POLICY_SEED_ROOT;
+    const dir = path.resolve(requested);
+    if (!isPathUnderPolicySeedRoot(dir)) {
+      return res.status(400).json({
+        error: `directory must be under ${POLICY_SEED_ROOT}`,
+      });
+    }
+    if (!fs.existsSync(dir) || !fs.statSync(dir).isDirectory()) {
+      return res.status(400).json({ error: "Not a directory or does not exist" });
+    }
+
+    const names = fs
+      .readdirSync(dir)
+      .filter((f) => f.toLowerCase().endsWith(".pdf"));
+
+    let inserted = 0;
+    let skippedExisting = 0;
+    const errors: string[] = [];
+
+    for (const name of names) {
+      const full = path.join(dir, name);
+      try {
+        const existing = await PolicyFileModel.findOne({ filename: name });
+        if (existing) {
+          skippedExisting++;
+          continue;
+        }
+        const fileBuffer = fs.readFileSync(full);
+        await PolicyFileModel.create({
+          filename: name,
+          data: fileBuffer,
+          mimetype: "application/pdf",
+        });
+        inserted++;
+      } catch (e) {
+        errors.push(`${name}: ${e instanceof Error ? e.message : String(e)}`);
+      }
+    }
+
+    res.json({
+      ok: true,
+      directory: dir,
+      files: names.length,
+      inserted,
+      skippedExisting,
+      errors: errors.length ? errors : undefined,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Seed failed" });
+  }
+});
+
 // search all PDFs and return metadata
 router.get("/policy_files/all", async (req, res) => {
   try {
@@ -102,86 +177,94 @@ router.get("/policy_files/file/:id", async (req, res) => {
   res.send(file.data);
 });
 
-router.post("/programme_catalogue/upload_programmes", async (req, res) => {
-  try {
-    const filePath = req.body.path; // e.g., "D:/docs/myfile.pdf"
-    if (!filePath) {
-      return res.status(400).json({ error: "No file uploaded" });
-    }
-
-    const rows = await readXlsxFile(filePath);
-    console.log("Excel rows:", rows.length);
-
-    if (!rows.length) {
-      return res.status(400).json({ error: "Excel file is empty" });
-    }
-
-    const header = rows[0];         // First row → column names
-    const dataRows = rows.slice(1); // Following rows → data
-    console.log("Header:", header);
-    console.log("datarows:", dataRows.length);
-
-    let inserted = 0;
-    let updated = 0;
-
-    for (const row of dataRows) {
-      if (row.length === 0 || row.every((v) => v === null || v === "")) {
-        continue; // skip empty rows
-      }
-
-      const record: any = {};
-
-      // Map Excel columns → object
-      row.forEach((value, idx) => {
-        const key = String(header[idx]);
-
-        if (!key) return;
-
-        // Convert study type string → array
-        if (key === "programme_study_type" && typeof value === "string") {
-          record[key] = value.split(",").map((v) => v.trim());
-        }
-        // Convert credits to number
-        else if (key === "programme_credits") {
-          record[key] = Number(value);
-        }
-
-        else {
-          record[key] = value;
-        }
-      });
-
-      // Ensure required primary field exists
-      if (!record.programme_code) continue;
-
-      // Find existing record
-      const existing = await CoursesFiles.findOne({
-        programme_code: record.programme_code,
-      });
-
-      if (existing) {
-        await CoursesFiles.updateOne(
-          { programme_code: record.programme_code },
-          { $set: record }
-        );
-        updated++;
+router.post(
+  "/programme_catalogue/upload_programmes",
+  multerSingleFile,
+  async (req, res) => {
+    try {
+      let rows;
+      if (req.file?.buffer) {
+        rows = await readXlsxFile(req.file.buffer);
+      } else if (typeof req.body?.path === "string" && req.body.path.trim()) {
+        rows = await readXlsxFile(req.body.path.trim());
       } else {
-        await CoursesFiles.create(record);
-        inserted++;
+        return res.status(400).json({
+          error:
+            'Upload an .xlsx as multipart field "file", or send JSON { "path": "<path on API server>" }',
+        });
       }
-    }
 
-    return res.json({
-      success: true,
-      message: "Upload processed successfully",
-      inserted,
-      updated,
-    });
-  } catch (error) {
-    console.error("Upload error:", error);
-    return res.status(500).json({ error: error });
+      console.log("Excel rows:", rows.length);
+
+      if (!rows.length) {
+        return res.status(400).json({ error: "Excel file is empty" });
+      }
+
+      const header = rows[0]; // First row → column names
+      const dataRows = rows.slice(1); // Following rows → data
+      console.log("Header:", header);
+      console.log("datarows:", dataRows.length);
+
+      let inserted = 0;
+      let updated = 0;
+
+      for (const row of dataRows) {
+        if (row.length === 0 || row.every((v) => v === null || v === "")) {
+          continue; // skip empty rows
+        }
+
+        const record: any = {};
+
+        // Map Excel columns → object
+        row.forEach((value, idx) => {
+          const key = String(header[idx]);
+
+          if (!key) return;
+
+          // Convert study type string → array
+          if (key === "programme_study_type" && typeof value === "string") {
+            record[key] = value.split(",").map((v) => v.trim());
+          }
+          // Convert credits to number
+          else if (key === "programme_credits") {
+            record[key] = Number(value);
+          } else {
+            record[key] = value;
+          }
+        });
+
+        // Ensure required primary field exists
+        if (!record.programme_code) continue;
+
+        // Find existing record
+        const existing = await CoursesFiles.findOne({
+          programme_code: record.programme_code,
+        });
+
+        if (existing) {
+          await CoursesFiles.updateOne(
+            { programme_code: record.programme_code },
+            { $set: record }
+          );
+          updated++;
+        } else {
+          await CoursesFiles.create(record);
+          inserted++;
+        }
+      }
+
+      return res.json({
+        success: true,
+        message: "Upload processed successfully",
+        inserted,
+        updated,
+      });
+    } catch (error) {
+      console.error("Upload error:", error);
+      return res.status(500).json({ error: error });
+    }
   }
-});
+);
 
 router.get("/programme_catalogue/search", async (req, res) => {
   try {
@@ -326,21 +409,27 @@ router.get("/programme_catalogue/code/:code", async (req, res) => {
   }
 });
 
-router.post("/unit_catalogues/upload_units", async (req, res) => {
+router.post("/unit_catalogues/upload_units", multerSingleFile, async (req, res) => {
   try {
-    const filePath = req.body.path; 
-    if (!filePath) {
-      return res.status(400).json({ error: "No file uploaded" });
+    let rows;
+    if (req.file?.buffer) {
+      rows = await readXlsxFile(req.file.buffer);
+    } else if (typeof req.body?.path === "string" && req.body.path.trim()) {
+      rows = await readXlsxFile(req.body.path.trim());
+    } else {
+      return res.status(400).json({
+        error:
+          'Upload an .xlsx as multipart field "file", or send JSON { "path": "<path on API server>" }',
+      });
     }
 
-    const rows = await readXlsxFile(filePath);
     console.log("Excel rows:", rows.length);
 
     if (!rows.length) {
       return res.status(400).json({ error: "Excel file is empty" });
     }
 
-    const header = rows[0];         // First row → column names
+    const header = rows[0]; // First row → column names
     const dataRows = rows.slice(1); // Following rows → data
     console.log("Header:", header);
     console.log("datarows:", dataRows.length);
@@ -368,9 +457,7 @@ router.post("/unit_catalogues/upload_units", async (req, res) => {
         // Convert credits to number
         else if (key === "unit_credits") {
           record[key] = Number(value);
-        }
-
-        else {
+        } else {
           record[key] = value;
         }
       });

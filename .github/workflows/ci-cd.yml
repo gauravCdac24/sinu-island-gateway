@@ -34,24 +34,30 @@ jobs:
       - name: Production build (Vite)
         run: npm run build
 
-  # Runs before deploy checkout: actions/checkout deletes the whole workspace first; root-owned
-  # nginx/logs/access.log from old Docker bind mounts cannot be removed by the runner user (EACCES).
-  # Requires passwordless sudo for the runner account (e.g. vboxuser). Single self-hosted runner only.
-  prepare-self-hosted:
-    name: Pre-clean workspace (self-hosted)
+  # checkout@v4 wipes the workspace first; root-owned nginx/logs (old bind mount) cannot be unlinked
+  # by the runner user. Stop the stack so nginx stops recreating logs, then sudo rm, then checkout.
+  # Requires passwordless sudo for the runner account.
+  deploy-staging:
+    name: Deploy staging (Docker Compose)
     needs: [test]
     runs-on: [self-hosted, sinuwebsite]
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     steps:
-      - name: Remove root-owned nginx logs from previous deploys
-        run: sudo rm -rf "${GITHUB_WORKSPACE}/nginx/logs" || true
+      - name: Stop staging stack and remove root-owned nginx logs (before checkout)
+        env:
+          COMPOSE_PROJECT_NAME: sinu-staging
+        run: |
+          set +e
+          WS="${GITHUB_WORKSPACE}"
+          # Stop containers even if compose file is missing from workspace (recreates root-owned ./nginx/logs).
+          docker stop sinu-app-staging sinu-api-staging 2>/dev/null
+          cd "$WS" 2>/dev/null || true
+          if [ -f docker-compose-staging.yml ]; then
+            docker compose -f docker-compose-staging.yml down --remove-orphans 2>/dev/null
+          fi
+          sudo rm -rf "$WS/nginx/logs" 2>/dev/null
+          exit 0
 
-  deploy-staging:
-    name: Deploy staging (Docker Compose)
-    needs: [prepare-self-hosted]
-    runs-on: [self-hosted, sinuwebsite]
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-    steps:
       - uses: actions/checkout@v4
         with:
           clean: false
@@ -73,6 +79,14 @@ jobs:
           echo ""
           curl -fsS "http://127.0.0.1:3000/api/health" | head -c 200
           echo ""
+
+      - name: Post-deploy (seed policies + optional commands)
+        env:
+          POST_DEPLOY_EXTRA_COMMANDS: ${{ secrets.POST_DEPLOY_EXTRA_COMMANDS }}
+        run: |
+          set -euo pipefail
+          chmod +x scripts/post-deploy-staging.sh
+          ./scripts/post-deploy-staging.sh
 
   # Optional: use this job instead of deploy-staging if you deploy from GitHub-hosted runners over SSH.
   # Uncomment and set secrets: STAGING_HOST, STAGING_USER, STAGING_SSH_KEY, STAGING_DEPLOY_PATH

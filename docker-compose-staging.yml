@@ -44,6 +44,9 @@ services:
       HOST: 0.0.0.0
       PORT: "7000"
       MONGO_URI: mongodb://mongo:27017/sinu_files
+    volumes:
+      # Optional: only needed if you use POST .../seed-from-directory or path-based uploads inside the container
+      - ./data/policies:/seed/policies:ro
     depends_on:
       mongo:
         condition: service_healthy
