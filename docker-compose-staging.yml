@@ -21,7 +21,7 @@ services:
     volumes:
       - ./nginx/staging/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/staging/conf.d:/etc/nginx/conf.d:ro
-      - ./nginx/logs:/var/log/nginx
+      - nginx_logs_staging:/var/log/nginx
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1/health"]
       interval: 30s
@@ -97,3 +97,4 @@ networks:
 
 volumes:
   mongo_data_staging:
+  nginx_logs_staging:

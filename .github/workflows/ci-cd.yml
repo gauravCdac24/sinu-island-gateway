@@ -41,6 +41,9 @@ jobs:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Avoid git clean failing on root-owned files from the old ./nginx/logs bind mount (self-hosted runner).
+          clean: false
 
       - name: Build and start containers
         env:
