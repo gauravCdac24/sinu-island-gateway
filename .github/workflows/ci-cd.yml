@@ -40,7 +40,7 @@ jobs:
   prepare-self-hosted:
     name: Pre-clean workspace (self-hosted)
     needs: [test]
-    runs-on: self-hosted
+    runs-on: [self-hosted, sinuwebsite]
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Remove root-owned nginx logs from previous deploys
@@ -49,7 +49,7 @@ jobs:
   deploy-staging:
     name: Deploy staging (Docker Compose)
     needs: [prepare-self-hosted]
-    runs-on: self-hosted
+    runs-on: [self-hosted, sinuwebsite]
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@v4
