@@ -34,15 +34,26 @@ jobs:
       - name: Production build (Vite)
         run: npm run build
 
+  # Runs before deploy checkout: actions/checkout deletes the whole workspace first; root-owned
+  # nginx/logs/access.log from old Docker bind mounts cannot be removed by the runner user (EACCES).
+  # Requires passwordless sudo for the runner account (e.g. vboxuser). Single self-hosted runner only.
+  prepare-self-hosted:
+    name: Pre-clean workspace (self-hosted)
+    needs: [test]
+    runs-on: self-hosted
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Remove root-owned nginx logs from previous deploys
+        run: sudo rm -rf "${GITHUB_WORKSPACE}/nginx/logs" || true
+
   deploy-staging:
     name: Deploy staging (Docker Compose)
-    needs: [test]
+    needs: [prepare-self-hosted]
     runs-on: self-hosted
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@v4
         with:
-          # Avoid git clean failing on root-owned files from the old ./nginx/logs bind mount (self-hosted runner).
           clean: false
 
       - name: Build and start containers
