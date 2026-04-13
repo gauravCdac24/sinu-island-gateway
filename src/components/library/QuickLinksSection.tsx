@@ -1,74 +1,76 @@
-
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { BookOpen, Download, Calendar, HelpCircle, Users, Laptop } from 'lucide-react';
+import React from "react";
+import { StudentImageCardSection } from "@/components/student-ui";
 
 const QuickLinksSection = () => {
-  const quickLinks = [
-    {
-      title: "Library Catalog",
-      description: "Search our collection",
-      icon: BookOpen,
-      color: "bg-[#219ebc]"
-    },
-    {
-      title: "Digital Resources",
-      description: "Access databases & e-books",
-      icon: Download,
-      color: "bg-[#ffb703]"
-    },
-    {
-      title: "Book a Study Room",
-      description: "Reserve study spaces",
-      icon: Calendar,
-      color: "bg-[#8ecae6]"
-    },
-    {
-      title: "Research Help",
-      description: "Get expert assistance",
-      icon: HelpCircle,
-      color: "bg-[#d7a12c]"
-    },
-    {
-      title: "Interlibrary Loans",
-      description: "Request external resources",
-      icon: Users,
-      color: "bg-[#219ebc]"
-    },
-    {
-      title: "Computer Access",
-      description: "Use library computers",
-      icon: Laptop,
-      color: "bg-[#ffb703]"
-    }
-  ];
-
   return (
-    <section className="py-16 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-[#082952] mb-4">Quick Access</h2>
-          <p className="text-lg text-[#082952] max-w-2xl mx-auto">
-            Find what you need quickly with our most popular library services and resources.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {quickLinks.map((link, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer group">
-              <CardContent className="p-6 text-center">
-                <div className={`${link.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
-                  <link.icon className="h-8 w-8 text-white" />
-                </div>
-                <h3 className="text-xl font-semibold text-[#082952] mb-2">{link.title}</h3>
-                <p className="text-[#082952] opacity-80">{link.description}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </section>
+    <StudentImageCardSection
+      eyebrow="Popular services"
+      title="What you can do at the library"
+      subtitle="These services are designed around how students actually study: solo focus time, group projects, and evidence-based research."
+      columns={3}
+      cards={[
+        {
+          title: "Search the catalogue",
+          description:
+            "Find books, e-books, and course readings. Use filters by campus location and availability so you know what you can borrow today.",
+          imageSrc:
+            "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80&auto=format&fit=crop",
+          imageAlt: "Books on library shelves",
+          href: "/course-finder",
+          linkLabel: "Explore programmes",
+        },
+        {
+          title: "Databases & e-resources",
+          description:
+            "Access peer-reviewed journals, subject databases, and citation tools. Ideal for essays, literature reviews, and final-year projects.",
+          imageSrc:
+            "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&q=80&auto=format&fit=crop",
+          imageAlt: "Laptop research",
+          href: "/admission-requirements",
+          linkLabel: "Entry & English requirements",
+        },
+        {
+          title: "Study spaces & PCs",
+          description:
+            "Use silent reading areas, shared tables for group work, and computer labs with printing. Arrive early during exam weeks for the best spots.",
+          imageSrc:
+            "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&q=80&auto=format&fit=crop",
+          imageAlt: "Students collaborating at a table",
+          href: "/student-academic-support",
+          linkLabel: "Learning support",
+        },
+        {
+          title: "Research skills help",
+          description:
+            "Librarians can help you refine keywords, evaluate sources, and use referencing styles correctly—skills that improve marks across every faculty.",
+          imageSrc:
+            "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80&auto=format&fit=crop",
+          imageAlt: "Taking notes during study",
+          href: "/policies-procedures",
+          linkLabel: "Policies & procedures",
+        },
+        {
+          title: "Interlibrary requests",
+          description:
+            "If we do not hold an item, we may be able to obtain it from partner libraries. Ask early so material arrives before your deadline.",
+          imageSrc:
+            "https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=800&q=80&auto=format&fit=crop",
+          imageAlt: "Library interior with reading desks",
+          href: "/apply",
+          linkLabel: "Become a student",
+        },
+        {
+          title: "After-hours online access",
+          description:
+            "Many resources are available 24/7 with your student login—so you can keep working when the building is closed.",
+          imageSrc:
+            "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80&auto=format&fit=crop",
+          imageAlt: "Student using laptop in evening",
+          href: "/student-login",
+          linkLabel: "Student portal",
+        },
+      ]}
+    />
   );
 };
 

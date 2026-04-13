@@ -1,36 +1,30 @@
-
-import React from 'react';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
-import AccommodationHero from '@/components/accommodation/AccommodationHero';
-import AccommodationOverviewSection from '@/components/accommodation/AccommodationOverviewSection';
-import AccommodationTypesSection from '@/components/accommodation/AccommodationTypesSection';
-import OnCampusSection from '@/components/accommodation/OnCampusSection';
-import OffCampusSection from '@/components/accommodation/OffCampusSection';
-import ApplicationProcessSection from '@/components/accommodation/ApplicationProcessSection';
-import CostsFeesSection from '@/components/accommodation/CostsFeesSection';
-import SupportServicesSection from '@/components/accommodation/SupportServicesSection';
-import FacilitiesSection from '@/components/accommodation/FacilitiesSection';
-import BackToTop from '@/components/common/BackToTop';
+import React from "react";
+import { StudentPageShell } from "@/components/student-ui";
+import StudyLevelQuickActions from "@/components/study-levels/StudyLevelQuickActions";
+import AccommodationHero from "@/components/accommodation/AccommodationHero";
+import AccommodationOverviewSection from "@/components/accommodation/AccommodationOverviewSection";
+import AccommodationTypesSection from "@/components/accommodation/AccommodationTypesSection";
+import OnCampusSection from "@/components/accommodation/OnCampusSection";
+import OffCampusSection from "@/components/accommodation/OffCampusSection";
+import ApplicationProcessSection from "@/components/accommodation/ApplicationProcessSection";
+import CostsFeesSection from "@/components/accommodation/CostsFeesSection";
+import SupportServicesSection from "@/components/accommodation/SupportServicesSection";
+import FacilitiesSection from "@/components/accommodation/FacilitiesSection";
 
 const StudentAccommodation = () => {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1">
-        <AccommodationHero />
-        <AccommodationOverviewSection />
-        <AccommodationTypesSection />
-        <OnCampusSection />
-        <OffCampusSection />
-        <ApplicationProcessSection />
-        <CostsFeesSection />
-        <FacilitiesSection />
-        <SupportServicesSection />
-      </main>
-      <Footer />
-      <BackToTop />
-    </div>
+    <StudentPageShell>
+      <AccommodationHero />
+      <StudyLevelQuickActions />
+      <AccommodationOverviewSection />
+      <AccommodationTypesSection />
+      <OnCampusSection />
+      <OffCampusSection />
+      <ApplicationProcessSection />
+      <CostsFeesSection />
+      <FacilitiesSection />
+      <SupportServicesSection />
+    </StudentPageShell>
   );
 };
 
