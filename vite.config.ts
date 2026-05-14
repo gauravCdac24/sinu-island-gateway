@@ -4,6 +4,10 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [react()],
+  optimizeDeps: {
+    // Only scan src/ — prevents Vite from crawling the sanity/ sub-project
+    entries: ['src/**/*.{ts,tsx,js,jsx}'],
+  },
   server: {
     port: 3000,
     host: '0.0.0.0',  // Listen on all interfaces

@@ -9,8 +9,8 @@ const envFile =
 
 const result = dotenv.config({ path: envFile });
 
-if (result.error && !process.env.MONGO_URI) {
-    console.error(`❌ Failed to load ${envFile} and MONGO_URI is not set`);
+if (result.error && !process.env.DATABASE_URL) {
+    console.error(`❌ Failed to load ${envFile} and DATABASE_URL is not set`);
     process.exit(1);
 }
 
@@ -34,16 +34,24 @@ app.get("/health", (_req, res) => {
 app.use(express.json());
 app.use(cors());
 
-connectDB();
-
-app.use("/", adminRoutes);
-app.use("/", studentRoutes);
-app.use("/", applyRoutes);
-app.use("/", fileRoutes);
-
 const hostname = process.env.HOST || "localhost";
 const PORT = parseInt(process.env.PORT as string, 10) || 7000;
 
-app.listen(PORT, hostname, () => {
-    console.log(`🚀 Server running on http://${hostname}:${PORT}`);
-});
+connectDB()
+  .then(() => {
+    app.use("/", adminRoutes);
+    app.use("/", studentRoutes);
+    app.use("/", applyRoutes);
+    app.use("/", fileRoutes);
+
+    app.listen(PORT, hostname, () => {
+      console.log(`🚀 Server running on http://${hostname}:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Failed to start server:", err);
+    process.exit(1);
+  });
+
+
+

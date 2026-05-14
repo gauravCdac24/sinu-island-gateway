@@ -28,6 +28,8 @@ uploads/
 *.sln
 *.sw?
 
+# Environment files — never commit secrets or server IPs
+.env
 .env.*.local
 .env.local
 .env.*.development

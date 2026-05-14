@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model StudentApplication {
+  id                     String           @id @default(uuid())
+  fullName               String           @map("full_name")
+  email                  String           @unique
+  phone                  String
+  phoneNormalized        String?          @map("phone_normalized")
+  dateOfBirth            String           @map("date_of_birth")
+  gender                 String
+  nationality            String
+  residentialAddress     String           @map("residential_address")
+  programmes             Json
+  documents              Json
+  status                 String           @default("pending")
+  adminRemarks           String?          @map("admin_remarks")
+  reviewedAt             DateTime?        @map("reviewed_at")
+  passwordHash           String?          @map("password_hash")
+  mustResetPassword      Boolean          @default(false) @map("must_reset_password")
+  passwordResetTokenHash String?          @map("password_reset_token_hash")
+  passwordResetExpiresAt DateTime?        @map("password_reset_expires_at")
+  otpCode                String?          @map("otp_code")
+  otpExpiresAt           DateTime?        @map("otp_expires_at")
+  otpAttempts            Int              @default(0) @map("otp_attempts")
+  createdAt              DateTime         @default(now()) @map("created_at")
+  updatedAt              DateTime         @updatedAt @map("updated_at")
+  sessions               StudentSession[]
+
+  @@index([phoneNormalized])
+  @@index([status])
+  @@map("student_applications")
+}
+
+model StudentSession {
+  id            String             @id @default(uuid())
+  applicationId String             @map("application_id")
+  refreshToken  String             @unique @map("refresh_token")
+  expiresAt     DateTime           @map("expires_at")
+  createdAt     DateTime           @default(now()) @map("created_at")
+  application   StudentApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+  @@map("student_sessions")
+}
+
+model PolicyFile {
+  id        String   @id @default(uuid())
+  filename  String
+  data      Bytes
+  mimetype  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([filename])
+  @@map("policy_files")
+}
+
+model Programme {
+  id                          String   @id @default(uuid())
+  programmeCode               String   @unique @map("programme_code")
+  programmeName               String   @map("programme_name")
+  programmeDepartment         String?  @map("programme_department")
+  programmeFaculty            String?  @map("programme_faculty")
+  siqfLevel                   String?  @map("SIQF_level")
+  programmeEntryRequirement   String?  @map("programme_entry_requirement")
+  programmeCredits            Float?   @map("programme_credits")
+  programmeYear               String?  @map("programme_year")
+  programmeStudyType          String[] @default([]) @map("programme_study_type")
+  programmeDescription        String?  @map("programme_description")
+  programmeLocation           String   @map("programme_location")
+  programmeStudyPeriod        String?  @map("programme_study_period")
+  programmeEnglishRequirement String?  @map("programme_english_requirement")
+  programmeLevel              String?  @map("programme_level")
+  programmeUnits              String?  @map("programme_units")
+  createdAt                   DateTime @default(now()) @map("created_at")
+  updatedAt                   DateTime @updatedAt @map("updated_at")
+
+  @@map("programmes")
+}
+
+model Unit {
+  id               String   @id @default(uuid())
+  programmeUnits   String   @unique @map("programme_units")
+  unitTitle        String?  @map("unit_title")
+  unitPrerequisite String?  @map("unit_prerequisite")
+  unitStudyType    String[] @default([]) @map("unit_study_type")
+  unitDescription  String?  @map("unit_description")
+  unitStudyPeriod  String[] @default([]) @map("unit_study_period")
+  unitCredits      Float?   @map("unit_credits")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@map("units")
+}

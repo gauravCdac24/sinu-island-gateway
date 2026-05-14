@@ -43,12 +43,11 @@ services:
       NODE_ENV: staging
       HOST: 0.0.0.0
       PORT: "7000"
-      MONGO_URI: mongodb://mongo:27017/sinu_files
+      DATABASE_URL: postgresql://sinu:sinu_staging@postgres:5432/sinu_gateway?schema=public
     volumes:
-      # Optional: only needed if you use POST .../seed-from-directory or path-based uploads inside the container
       - ./data/policies:/seed/policies:ro
     depends_on:
-      mongo:
+      postgres:
         condition: service_healthy
     networks:
       - sinu-network
@@ -59,38 +58,22 @@ services:
       retries: 5
       start_period: 60s
 
-  mongo:
-    image: mongo:7
-    container_name: sinu-mongo-staging
+  postgres:
+    image: postgres:16-alpine
+    container_name: sinu-postgres-staging
     restart: unless-stopped
     volumes:
-      - mongo_data_staging:/data/db
+      - postgres_data_staging:/var/lib/postgresql/data
     environment:
-      MONGO_INITDB_DATABASE: sinu_files
-    command: mongod --bind_ip_all
+      POSTGRES_USER: sinu
+      POSTGRES_PASSWORD: sinu_staging
+      POSTGRES_DB: sinu_gateway
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 })", "--quiet"]
+      test: ["CMD-SHELL", "pg_isready -U sinu -d sinu_gateway"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 10s
-    networks:
-      - sinu-network
-
-  mongo-express:
-    image: mongo-express
-    container_name: sinu-mongo-express-staging
-    restart: unless-stopped
-    ports:
-      - "8081:8081"
-    environment:
-      ME_CONFIG_MONGODB_SERVER: mongo
-      ME_CONFIG_MONGODB_PORT: "27017"
-      ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
-      ME_CONFIG_BASICAUTH_USERNAME: admin
-      ME_CONFIG_BASICAUTH_PASSWORD: changeme
-    depends_on:
-      - mongo
     networks:
       - sinu-network
 
@@ -99,5 +82,5 @@ networks:
     driver: bridge
 
 volumes:
-  mongo_data_staging:
+  postgres_data_staging:
   nginx_logs_staging:

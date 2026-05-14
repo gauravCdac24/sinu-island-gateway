@@ -62,10 +62,9 @@ clean:
 	docker-compose --env-file .env.production -f docker-compose.yml down -v
 	docker system prune -f --volumes
 
-# Utility commands
+# Utility commands (PostgreSQL)
 db-backup:
-	docker exec $$(docker-compose --env-file .env.production -f docker-compose.yml ps -q mongo) mongodump --out /backup/$$(date +%Y%m%d_%H%M%S)
+	docker exec $$(docker-compose --env-file .env.production -f docker-compose.yml ps -q postgres) pg_dump -U sinu sinu_production > pg-backup-$$(date +%Y%m%d_%H%M%S).sql
 
 db-restore:
-	@read -p "Enter backup folder name: " folder; \
-	docker exec $$(docker-compose --env-file .env.production -f docker-compose.yml ps -q mongo) mongorestore /backup/$$folder
+	@echo "Restore: cat backup.sql | docker exec -i \$$(docker-compose --env-file .env.production -f docker-compose.yml ps -q postgres) psql -U sinu -d sinu_production"

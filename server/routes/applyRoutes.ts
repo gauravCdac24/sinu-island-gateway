@@ -2,16 +2,15 @@ import { Router } from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-// import nodemailer from "nodemailer"; // TESTING: SMTP disabled — uncomment for production
-import StudentApplication from "../models/StudentApplication.ts";
-import type { DocumentCategory } from "../models/StudentApplication.ts";
-import CoursesFiles from "../models/Courses_File.ts";
+import { prisma } from "../lib/prisma.ts";
+import type { DocumentCategory } from "../types/studentApplication.ts";
 import { getStudentUploadDir } from "../utils/uploadPaths.ts";
 import { normalizePhoneDigits } from "../utils/phoneNormalize.ts";
+import { generateRandomPassword, hashPassword } from "../utils/password.ts";
+import { sendSmtpMail } from "../utils/smtpMailer.ts";
 
 const router = Router();
 
-/** Pre-check before multi-step form continues (email + phone vs existing applications). */
 router.post("/student_applications/check-duplicate", async (req, res) => {
   try {
     const email = String(req.body?.email || "").trim().toLowerCase();
@@ -20,16 +19,17 @@ router.post("/student_applications/check-duplicate", async (req, res) => {
       return res.status(400).json({ error: "Email is required." });
     }
 
-    const emailTaken = Boolean(await StudentApplication.findOne({ email }).lean());
+    const emailTaken = Boolean(await prisma.studentApplication.findUnique({ where: { email } }));
 
     const phoneDigits = normalizePhoneDigits(phone);
-    let phoneTaken = false;
-    if (phoneDigits.length >= 5) {
-      const apps = await StudentApplication.find({}, { phone: 1 }).lean();
-      phoneTaken = apps.some(
-        (a) => normalizePhoneDigits(String(a.phone || "")) === phoneDigits
-      );
-    }
+    const phoneTaken =
+      phoneDigits.length >= 5
+        ? Boolean(
+            await prisma.studentApplication.findFirst({
+              where: { phoneNormalized: phoneDigits },
+            })
+          )
+        : false;
 
     return res.json({ ok: true, emailTaken, phoneTaken });
   } catch (e) {
@@ -76,88 +76,72 @@ const FILE_GROUPS: FileGroup[] = [
   { field: "english_requirement", category: "english_requirement", min: 1, max: 10 },
 ];
 
+function frontendBaseUrl(): string {
+  return (
+    process.env.PUBLIC_SITE_URL ||
+    process.env.FRONTEND_URL ||
+    "http://localhost:5173"
+  ).replace(/\/$/, "");
+}
+
 async function sendConfirmationEmail(
-  _to: string,
-  _fullName: string,
-  _programmes: { priority: number; programme_code: string; programme_name: string }[],
-  _byCategory: Record<DocumentCategory, number>
+  to: string,
+  fullName: string,
+  programmes: { priority: number; programme_code: string; programme_name: string }[],
+  loginId: string,
+  plainPassword: string
 ): Promise<boolean> {
-  /* TESTING: SMTP disabled — restore nodemailer import + body below for production
-  const to = _to;
-  const fullName = _fullName;
-  const programmes = _programmes;
-  const byCategory = _byCategory;
-  const host = process.env.SMTP_HOST;
-  const port = Number(process.env.SMTP_PORT || 587);
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
-  const from =
-    process.env.SMTP_FROM ||
-    process.env.SMTP_USER ||
-    "noreply@localhost";
-
-  if (!host || !user || !pass) {
-    console.warn(
-      "SMTP not configured (SMTP_HOST, SMTP_USER, SMTP_PASS); skipping confirmation email."
-    );
-    return false;
-  }
-
-  const transporter = nodemailer.createTransport({
-    host,
-    port,
-    secure: process.env.SMTP_SECURE === "true" || port === 465,
-    auth: { user, pass },
-  });
-
-  const programmeLines = programmes
+  const courseList = programmes
     .sort((a, b) => a.priority - b.priority)
     .map(
-      (p) =>
-        `  Priority ${p.priority}: ${p.programme_name} (${p.programme_code})`
+      (p, i) =>
+        `  ${i + 1}. ${p.programme_name} (${p.programme_code})`
     )
     .join("\n");
 
-  const totalFiles = Object.values(byCategory).reduce((a, b) => a + b, 0);
-  const catLines = [
-    `  Profile photo: ${byCategory.profile_image}`,
-    `  Study documents: ${byCategory.study_documents}`,
-    `  Certificates: ${byCategory.certificates}`,
-    `  Statement of purpose (SOP): ${byCategory.sop}`,
-    `  English requirement: ${byCategory.english_requirement}`,
-  ].join("\n");
+  const portalUrl = `${frontendBaseUrl()}/student-login`;
 
   const text = `Dear ${fullName},
 
 Thank you for submitting your application to the Solomon Islands National University (SINU).
 
-We have received your details and ${totalFiles} file(s) in total.
+Your application has been received and is currently under review.
 
-Uploads by category:
-${catLines}
+━━━━━━━━━━━━━━━━━━━━━━━━
+PROGRAMMES APPLIED FOR
+━━━━━━━━━━━━━━━━━━━━━━━━
+${courseList}
 
-Programme choices:
-${programmeLines}
+━━━━━━━━━━━━━━━━━━━━━━━━
+YOUR STUDENT PORTAL LOGIN CREDENTIALS
+━━━━━━━━━━━━━━━━━━━━━━━━
+Login ID (Email): ${loginId}
+Password        : ${plainPassword}
 
-We will contact you using this email address if further information is required.
+You can use these credentials to log in to the Student Portal and check the status of your application at any time:
+${portalUrl}
+
+For security reasons, you will be asked to verify a one-time passcode (OTP) during login.
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+NEXT STEPS
+━━━━━━━━━━━━━━━━━━━━━━━━
+• Log in to the portal to track your application status.
+• You will be notified once a decision has been made.
+• If selected, further enrolment instructions will be provided.
+
+If you have any questions, please contact the SINU Admissions Office.
 
 Kind regards,
-SINU Admissions`;
+Admissions Team
+Solomon Islands National University
+`;
 
-  try {
-    await transporter.sendMail({
-      from,
-      to,
-      subject: "SINU — Application received",
-      text,
-    });
-    return true;
-  } catch (e) {
-    console.error("Failed to send confirmation email:", e);
-    return false;
-  }
-  */
-  return false;
+  return sendSmtpMail({
+    to,
+    subject: "SINU — Application Received & Your Login Credentials",
+    text,
+  });
 }
 
 router.post(
@@ -224,9 +208,9 @@ router.post(
         if (!p.programme_code?.trim() || !p.programme_name?.trim()) {
           return res.status(400).json({ error: "Each programme must have a code and name." });
         }
-        const exists = await CoursesFiles.findOne({
-          programme_code: p.programme_code.trim(),
-        }).lean();
+        const exists = await prisma.programme.findUnique({
+          where: { programmeCode: p.programme_code.trim() },
+        });
         if (!exists) {
           return res.status(400).json({
             error: `Invalid programme code: ${p.programme_code}`,
@@ -254,7 +238,7 @@ router.post(
         return res.status(400).json({ error: "Invalid email address." });
       }
 
-      const existingByEmail = await StudentApplication.findOne({ email }).lean();
+      const existingByEmail = await prisma.studentApplication.findUnique({ where: { email } });
       if (existingByEmail) {
         return res.status(400).json({
           error:
@@ -266,10 +250,9 @@ router.post(
       if (phoneDigits.length < 5) {
         return res.status(400).json({ error: "Enter a valid phone number." });
       }
-      const phoneRows = await StudentApplication.find({}, { phone: 1 }).lean();
-      const phoneTaken = phoneRows.some(
-        (a) => normalizePhoneDigits(String(a.phone || "")) === phoneDigits
-      );
+      const phoneTaken = await prisma.studentApplication.findFirst({
+        where: { phoneNormalized: phoneDigits },
+      });
       if (phoneTaken) {
         return res.status(400).json({
           error:
@@ -338,37 +321,48 @@ router.post(
         }
       }
 
-      const doc = await StudentApplication.create({
-        fullName,
-        email,
-        phone,
-        dateOfBirth,
-        gender,
-        nationality,
-        residentialAddress,
-        programmes: programmesParsed.map((p) => ({
-          priority: p.priority,
-          programme_code: p.programme_code.trim(),
-          programme_name: p.programme_name.trim(),
-        })),
-        documents: documentRefs,
-        status: "pending",
+      const programmesJson = programmesParsed.map((p) => ({
+        priority: p.priority,
+        programme_code: p.programme_code.trim(),
+        programme_name: p.programme_name.trim(),
+      }));
+
+      const plainPassword = generateRandomPassword(12);
+      const passwordHash = await hashPassword(plainPassword);
+
+      const doc = await prisma.studentApplication.create({
+        data: {
+          fullName,
+          email,
+          phone,
+          phoneNormalized: phoneDigits,
+          dateOfBirth,
+          gender,
+          nationality,
+          residentialAddress,
+          programmes: programmesJson,
+          documents: documentRefs,
+          status: "pending",
+          passwordHash,
+          mustResetPassword: false,
+        },
       });
 
       const emailSent = await sendConfirmationEmail(
         email,
         fullName,
         programmesParsed,
-        byCategory
+        email,
+        plainPassword
       );
 
       return res.status(201).json({
         ok: true,
-        id: doc._id,
+        id: doc.id,
         emailSent,
         message: emailSent
-          ? "Application submitted. Check your email for confirmation."
-          : "Application submitted. If you do not receive email, contact admissions.",
+          ? "Application submitted! Your login credentials have been sent to your email."
+          : "Application submitted. Your login credentials will be sent shortly. If you don't receive them, contact admissions.",
       });
     } catch (err) {
       console.error("student_applications error:", err);

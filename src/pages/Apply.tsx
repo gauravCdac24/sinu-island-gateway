@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
@@ -578,6 +578,18 @@ const Apply = () => {
                       We could not send a confirmation email. Download or print your summary below.
                     </p>
                   )}
+                  <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+                    <Button
+                      type="button"
+                      className="bg-[#082952] hover:bg-[#0d4080] text-white font-semibold px-6 py-2 rounded-lg text-sm"
+                      onClick={() => (window.location.href = "/student-login")}
+                    >
+                      Go to Student Portal Login →
+                    </Button>
+                    <p className="text-xs text-emerald-800/70">
+                      Use the login credentials sent to your email.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

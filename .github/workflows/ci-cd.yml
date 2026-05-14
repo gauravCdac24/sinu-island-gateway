@@ -50,7 +50,7 @@ jobs:
           set +e
           WS="${GITHUB_WORKSPACE}"
           # Stop containers even if compose file is missing from workspace (recreates root-owned ./nginx/logs).
-          docker stop sinu-app-staging sinu-api-staging 2>/dev/null
+          docker stop sinu-app-staging sinu-api-staging sinu-postgres-staging 2>/dev/null
           cd "$WS" 2>/dev/null || true
           if [ -f docker-compose-staging.yml ]; then
             docker compose -f docker-compose-staging.yml down --remove-orphans 2>/dev/null

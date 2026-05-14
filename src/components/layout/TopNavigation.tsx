@@ -43,7 +43,7 @@ const TopNavigation: React.FC<TopNavigationProps> = ({ isScrolled = false, force
             asChild
             variant="ghost"
             size="sm"
-            className="h-10 w-full justify-start font-medium text-university-dark-gray hover:bg-university-light-blue/30"
+            className="h-10 w-full justify-start font-medium text-white hover:bg-white/15 hover:text-university-gold"
           >
             {external ? (
               <a href={href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">

@@ -35,14 +35,15 @@ services:
     image: gauravsingh1998/sinu-api:${API_TAG:-latest}
     restart: always
     expose:
-      - "3000"
+      - "7000"
     environment:
       NODE_ENV: ${NODE_ENV:-production}
-      MONGO_URI: ${MONGO_URI:-mongodb://mongo:27017/sinu-production}
-      PORT: 3000
+      DATABASE_URL: ${DATABASE_URL:-postgresql://sinu:sinu@postgres:5432/sinu_production?schema=public}
+      PORT: 7000
+      HOST: 0.0.0.0
       CORS_ORIGIN: ${CORS_ORIGIN:-https://yourdomain.com}
     depends_on:
-      mongo:
+      postgres:
         condition: service_healthy
     networks:
       - sinu-network
@@ -51,19 +52,20 @@ services:
       restart_policy:
         condition: on-failure
 
-  mongo:
-    image: mongo:7
+  postgres:
+    image: postgres:16-alpine
     restart: always
     volumes:
-      - mongo_data_production:/data/db
-      - ./mongo-backup:/backup
+      - postgres_data_production:/var/lib/postgresql/data
+      - ./pg-backup:/backup
     environment:
-      MONGO_INITDB_DATABASE: sinu-production
-    command: [--auth]
+      POSTGRES_USER: ${POSTGRES_USER:-sinu}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sinu}
+      POSTGRES_DB: ${POSTGRES_DB:-sinu_production}
     networks:
       - sinu-network
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      test: ["CMD-SHELL", "pg_isready -U sinu -d sinu_production"]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -83,6 +85,6 @@ networks:
     driver: bridge
 
 volumes:
-  mongo_data_production:
+  postgres_data_production:
   redis_data:
   nginx_logs_production:
