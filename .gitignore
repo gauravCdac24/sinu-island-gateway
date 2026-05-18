@@ -16,6 +16,7 @@ dist-ssr
 
 # Student application uploads (local disk)
 uploads/
+uploads/job-applications/
 
 # Editor directories and files
 .vscode/*

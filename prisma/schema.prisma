@@ -99,3 +99,55 @@ model Unit {
 
   @@map("units")
 }
+
+model JobVacancy {
+  id                             String    @id @default(uuid())
+  vacancyNo                      String    @unique @map("vacancy_no")
+  title                          String
+  divisionDepartment             String    @map("division_department")
+  locationCampus                 String    @map("location_campus")
+  bandGrade                      String?   @map("band_grade")
+  staffCategory                  String?   @map("staff_category")
+  reportsTo                      String?   @map("reports_to")
+  summaryOfDuties                String?   @map("summary_of_duties") @db.Text
+  mainDuties                     String?   @map("main_duties") @db.Text
+  dimensions                     String?   @db.Text
+  generalResponsibilities        String?   @map("general_responsibilities") @db.Text
+  qualificationsRequired         String?   @map("qualifications_required") @db.Text
+  experienceRequired             String?   @map("experience_required") @db.Text
+  minimumQualificationExperience String?   @map("minimum_qualification_experience") @db.Text
+  salaryRange                    String?   @map("salary_range")
+  employmentType                 String?   @map("employment_type")
+  termsAndConditions             String?   @map("terms_and_conditions") @db.Text
+  keySelectionCriteria           String[]  @default([]) @map("key_selection_criteria")
+  closingDate                    DateTime? @map("closing_date")
+  status                         String    @default("draft")
+  publishedAt                    DateTime? @map("published_at")
+  archivedAt                     DateTime? @map("archived_at")
+  createdAt                      DateTime  @default(now()) @map("created_at")
+  updatedAt                      DateTime  @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([closingDate])
+  @@map("job_vacancies")
+}
+
+model JobApplication {
+  id                String      @id @default(uuid())
+  vacancyNo         String      @map("vacancy_no")
+  positionTitle     String      @map("position_title")
+  facultyDepartment String      @map("faculty_department")
+  email             String
+  fullName          String      @map("full_name")
+  formData          Json
+  documents         Json
+  resumeExtracted   Json?       @map("resume_extracted")
+  status            String      @default("pending")
+  createdAt         DateTime    @default(now()) @map("created_at")
+  updatedAt         DateTime    @updatedAt @map("updated_at")
+
+  @@index([vacancyNo])
+  @@index([email])
+  @@index([status])
+  @@map("job_applications")
+}

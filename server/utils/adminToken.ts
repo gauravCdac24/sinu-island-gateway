@@ -2,14 +2,24 @@ import crypto from "crypto";
 
 const secret = () => process.env.ADMIN_JWT_SECRET || "sinu-admin-dev-secret-change-in-production";
 
-export function signAdminToken(): string {
+export type AuthRole = "admin" | "hr";
+
+export function signRoleToken(role: AuthRole): string {
   const exp = Date.now() + 8 * 60 * 60 * 1000;
-  const payload = Buffer.from(JSON.stringify({ role: "admin", exp })).toString("base64url");
+  const payload = Buffer.from(JSON.stringify({ role, exp })).toString("base64url");
   const sig = crypto.createHmac("sha256", secret()).update(payload).digest("base64url");
   return `${payload}.${sig}`;
 }
 
-export function verifyAdminToken(token: string | undefined): boolean {
+export function signAdminToken(): string {
+  return signRoleToken("admin");
+}
+
+export function signHrToken(): string {
+  return signRoleToken("hr");
+}
+
+function verifyRoleToken(token: string | undefined, expectedRole: AuthRole): boolean {
   if (!token || !token.includes(".")) return false;
   const [payload, sig] = token.split(".");
   if (!payload || !sig) return false;
@@ -20,10 +30,18 @@ export function verifyAdminToken(token: string | undefined): boolean {
       exp: number;
       role: string;
     };
-    return data.role === "admin" && data.exp > Date.now();
+    return data.role === expectedRole && data.exp > Date.now();
   } catch {
     return false;
   }
+}
+
+export function verifyAdminToken(token: string | undefined): boolean {
+  return verifyRoleToken(token, "admin");
+}
+
+export function verifyHrToken(token: string | undefined): boolean {
+  return verifyRoleToken(token, "hr");
 }
 
 export function signStudentToken(applicationId: string, email: string): string {

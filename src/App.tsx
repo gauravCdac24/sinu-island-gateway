@@ -60,6 +60,8 @@ import ApplicantLogin from "./pages/ApplicantLogin";
 import NotFound from "./pages/NotFound";
 import TafeEnrollment from "./pages/TafeEnrollment";
 import Policies from "./pages/Policies";
+import JobsVacancies from "./pages/JobsVacancies";
+import JobApply from "./pages/JobApply";
 import { ProgramDetails } from "./components/study-abroad/ProgramDetails";
 import ProgrammeDetails from "./pages/ProgrammeDetails";
 import ResearchEthics from "./pages/ResearchEthics";
@@ -69,6 +71,14 @@ import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminApplicationsList from "./pages/admin/AdminApplicationsList";
 import AdminApplicationDetail from "./pages/admin/AdminApplicationDetail";
+import HrLogin from "./pages/hr/HrLogin";
+import HrLayout from "./pages/hr/HrLayout";
+import HrDashboard from "./pages/hr/HrDashboard";
+import HrJobsList from "./pages/hr/HrJobsList";
+import HrCreateJob from "./pages/hr/HrCreateJob";
+import HrApplications from "./pages/hr/HrApplications";
+import HrApplicationDetail from "./pages/hr/HrApplicationDetail";
+import JobsArchived from "./pages/JobsArchived";
 
 const queryClient = new QueryClient();
 
@@ -145,6 +155,19 @@ const App = () => (
           <Route path="/applicant-login" element={<ApplicantLogin />} />
           <Route path="/tafe-enroll" element={<TafeEnrollment />} />
           <Route path="/policies-procedures" element={<Policies/>}/>
+          <Route path="/jobs-vacancies" element={<JobsVacancies />} />
+          <Route path="/jobs-vacancies/archived" element={<JobsArchived />} />
+          <Route path="/jobs-vacancies/apply" element={<JobApply />} />
+          <Route path="/hr/login" element={<HrLogin />} />
+          <Route path="/hr" element={<HrLayout />}>
+            <Route index element={<Navigate to="/hr/dashboard" replace />} />
+            <Route path="dashboard" element={<HrDashboard />} />
+            <Route path="jobs" element={<HrJobsList />} />
+            <Route path="jobs/new" element={<HrCreateJob />} />
+            <Route path="jobs/:id/edit" element={<HrCreateJob />} />
+            <Route path="applications" element={<HrApplications />} />
+            <Route path="applications/:id" element={<HrApplicationDetail />} />
+          </Route>
           <Route path="/programme/:code" element={<ProgrammeDetails />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

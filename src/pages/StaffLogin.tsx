@@ -29,6 +29,12 @@ const StaffLogin = () => {
           />
           <h1 className="text-2xl font-bold text-[#082952] mb-2">Staff Portal</h1>
           <p className="text-[#219ebc]">Solomon Islands National University</p>
+          <p className="text-xs text-gray-500 mt-3">
+            HR recruitment staff:{" "}
+            <Link to="/hr/login" className="text-[#22a2bf] underline font-medium">
+              HR Admin Portal
+            </Link>
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">

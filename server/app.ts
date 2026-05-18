@@ -22,6 +22,8 @@ import cors from "cors";
 import { connectDB } from "./config/dbconnect.ts";
 import fileRoutes from "./routes/fileRoutes.ts";
 import applyRoutes from "./routes/applyRoutes.ts";
+import jobApplicationRoutes from "./routes/jobApplicationRoutes.ts";
+import hrRoutes from "./routes/hrRoutes.ts";
 import adminRoutes from "./routes/adminRoutes.ts";
 import studentRoutes from "./routes/studentRoutes.ts";
 
@@ -42,6 +44,8 @@ connectDB()
     app.use("/", adminRoutes);
     app.use("/", studentRoutes);
     app.use("/", applyRoutes);
+    app.use("/", jobApplicationRoutes);
+    app.use("/", hrRoutes);
     app.use("/", fileRoutes);
 
     app.listen(PORT, hostname, () => {

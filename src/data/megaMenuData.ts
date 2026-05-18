@@ -84,6 +84,7 @@ export const megaMenuData = {
       { title: "Organizational Structure", url: "#" },
       { title: "Strategic Plan", url: "#" },
       { title: "Policies & Procedures", url: "/policies-procedures" },
+      { title: "Jobs & Vacancies", url: "/jobs-vacancies" },
       { title: "BICS" , url: "#" }
     ],
     image: {
