@@ -32,6 +32,7 @@ model StudentApplication {
   createdAt              DateTime         @default(now()) @map("created_at")
   updatedAt              DateTime         @updatedAt @map("updated_at")
   sessions               StudentSession[]
+  forumSubmissions       ForumSubmission[]
 
   @@index([phoneNormalized])
   @@index([status])
@@ -187,4 +188,68 @@ model TenderEoiDocument {
   @@unique([tenderId, slot])
   @@index([tenderId])
   @@map("tender_eoi_documents")
+}
+
+model ForumCategory {
+  id                 String                   @id @default(uuid())
+  title              String
+  slug               String                   @unique
+  description        String?                  @db.Text
+  sortOrder          Int                      @map("sort_order")
+  isActive           Boolean                  @default(true) @map("is_active")
+  createdAt          DateTime                 @default(now()) @map("created_at")
+  updatedAt          DateTime                 @updatedAt @map("updated_at")
+  suggestedQuestions ForumSuggestedQuestion[]
+  submissions        ForumSubmission[]
+
+  @@map("forum_categories")
+}
+
+model ForumSuggestedQuestion {
+  id         String        @id @default(uuid())
+  categoryId String        @map("category_id")
+  label      String
+  body       String        @db.Text
+  sortOrder  Int           @map("sort_order")
+  category   ForumCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId])
+  @@map("forum_suggested_questions")
+}
+
+model ForumSubmission {
+  id                  String              @id @default(uuid())
+  categoryId          String              @map("category_id")
+  applicationId       String?             @map("application_id")
+  studentName         String              @map("student_name")
+  studentEmail        String              @map("student_email")
+  subject             String?
+  body                String              @db.Text
+  status              String              @default("open")
+  isPublic            Boolean             @default(false) @map("is_public")
+  suggestedQuestionId String?             @map("suggested_question_id")
+  createdAt           DateTime            @default(now()) @map("created_at")
+  updatedAt           DateTime            @updatedAt @map("updated_at")
+  category            ForumCategory       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  application         StudentApplication? @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+  replies             ForumReply[]
+
+  @@index([categoryId])
+  @@index([status])
+  @@index([applicationId])
+  @@index([isPublic])
+  @@map("forum_submissions")
+}
+
+model ForumReply {
+  id           String          @id @default(uuid())
+  submissionId String          @map("submission_id")
+  authorRole   String          @map("author_role")
+  authorName   String          @map("author_name")
+  body         String          @db.Text
+  createdAt    DateTime        @default(now()) @map("created_at")
+  submission   ForumSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@index([submissionId])
+  @@map("forum_replies")
 }

@@ -27,6 +27,7 @@ import hrRoutes from "./routes/hrRoutes.ts";
 import tenderRoutes from "./routes/tenderRoutes.ts";
 import adminRoutes from "./routes/adminRoutes.ts";
 import studentRoutes from "./routes/studentRoutes.ts";
+import forumRoutes from "./routes/forumRoutes.ts";
 
 const app = express();
 
@@ -44,6 +45,7 @@ connectDB()
   .then(() => {
     app.use("/", adminRoutes);
     app.use("/", studentRoutes);
+    app.use("/", forumRoutes);
     app.use("/", applyRoutes);
     app.use("/", jobApplicationRoutes);
     app.use("/", hrRoutes);

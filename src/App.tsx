@@ -82,6 +82,9 @@ import JobsArchived from "./pages/JobsArchived";
 import TendersEoi from "./pages/TendersEoi";
 import AdminTendersList from "./pages/admin/AdminTendersList";
 import AdminCreateTender from "./pages/admin/AdminCreateTender";
+import StudentManagementForum from "./pages/StudentManagementForum";
+import AdminForumList from "./pages/admin/AdminForumList";
+import AdminForumDetail from "./pages/admin/AdminForumDetail";
 
 const queryClient = new QueryClient();
 
@@ -146,6 +149,7 @@ const App = () => (
           <Route path="/student-forgot-password" element={<StudentForgotPassword />} />
           <Route path="/student-reset-password" element={<StudentResetPassword />} />
           <Route path="/student-portal" element={<StudentPortal />} />
+          <Route path="/student-management-forum" element={<StudentManagementForum />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Navigate to="/admin/dashboard" replace />} />
@@ -157,6 +161,8 @@ const App = () => (
             <Route path="tenders" element={<AdminTendersList />} />
             <Route path="tenders/new" element={<AdminCreateTender />} />
             <Route path="tenders/:id/edit" element={<AdminCreateTender />} />
+            <Route path="forum" element={<AdminForumList />} />
+            <Route path="forum/:id" element={<AdminForumDetail />} />
           </Route>
           <Route path="/applicant-login" element={<ApplicantLogin />} />
           <Route path="/tafe-enroll" element={<TafeEnrollment />} />
