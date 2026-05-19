@@ -24,6 +24,7 @@ import fileRoutes from "./routes/fileRoutes.ts";
 import applyRoutes from "./routes/applyRoutes.ts";
 import jobApplicationRoutes from "./routes/jobApplicationRoutes.ts";
 import hrRoutes from "./routes/hrRoutes.ts";
+import tenderRoutes from "./routes/tenderRoutes.ts";
 import adminRoutes from "./routes/adminRoutes.ts";
 import studentRoutes from "./routes/studentRoutes.ts";
 
@@ -46,6 +47,7 @@ connectDB()
     app.use("/", applyRoutes);
     app.use("/", jobApplicationRoutes);
     app.use("/", hrRoutes);
+    app.use("/", tenderRoutes);
     app.use("/", fileRoutes);
 
     app.listen(PORT, hostname, () => {

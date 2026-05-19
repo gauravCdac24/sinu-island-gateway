@@ -79,6 +79,9 @@ import HrCreateJob from "./pages/hr/HrCreateJob";
 import HrApplications from "./pages/hr/HrApplications";
 import HrApplicationDetail from "./pages/hr/HrApplicationDetail";
 import JobsArchived from "./pages/JobsArchived";
+import TendersEoi from "./pages/TendersEoi";
+import AdminTendersList from "./pages/admin/AdminTendersList";
+import AdminCreateTender from "./pages/admin/AdminCreateTender";
 
 const queryClient = new QueryClient();
 
@@ -151,10 +154,14 @@ const App = () => (
             <Route path="accepted" element={<AdminApplicationsList status="approved" />} />
             <Route path="rejected" element={<AdminApplicationsList status="rejected" />} />
             <Route path="application/:id" element={<AdminApplicationDetail />} />
+            <Route path="tenders" element={<AdminTendersList />} />
+            <Route path="tenders/new" element={<AdminCreateTender />} />
+            <Route path="tenders/:id/edit" element={<AdminCreateTender />} />
           </Route>
           <Route path="/applicant-login" element={<ApplicantLogin />} />
           <Route path="/tafe-enroll" element={<TafeEnrollment />} />
           <Route path="/policies-procedures" element={<Policies/>}/>
+          <Route path="/tenders-eoi" element={<TendersEoi />} />
           <Route path="/jobs-vacancies" element={<JobsVacancies />} />
           <Route path="/jobs-vacancies/archived" element={<JobsArchived />} />
           <Route path="/jobs-vacancies/apply" element={<JobApply />} />

@@ -151,3 +151,40 @@ model JobApplication {
   @@index([status])
   @@map("job_applications")
 }
+
+model TenderEoi {
+  id          String              @id @default(uuid())
+  referenceNo String?             @map("reference_no")
+  title       String
+  description String              @db.Text
+  department  String
+  type        String
+  closingDate DateTime            @map("closing_date")
+  status      String              @default("draft")
+  publishedAt DateTime?           @map("published_at")
+  archivedAt  DateTime?           @map("archived_at")
+  createdAt   DateTime            @default(now()) @map("created_at")
+  updatedAt   DateTime            @updatedAt @map("updated_at")
+  documents   TenderEoiDocument[]
+
+  @@index([status])
+  @@index([type])
+  @@index([closingDate])
+  @@map("tender_eoi")
+}
+
+model TenderEoiDocument {
+  id        String    @id @default(uuid())
+  tenderId  String    @map("tender_id")
+  slot      Int
+  label     String?
+  filename  String
+  data      Bytes
+  mimetype  String    @default("application/pdf")
+  createdAt DateTime  @default(now()) @map("created_at")
+  tender    TenderEoi @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+
+  @@unique([tenderId, slot])
+  @@index([tenderId])
+  @@map("tender_eoi_documents")
+}
