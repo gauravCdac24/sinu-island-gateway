@@ -63,10 +63,10 @@ const AdminForumList = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#0b2c55]">Student–Management Forum</h1>
+        <h1 className="text-2xl font-bold text-[#0b2c55]">Student queries</h1>
         <p className="mt-1 text-sm text-gray-600">
-          Review student questions from the SINUSA–Management Dialogue and post
-          management responses.
+          Review questions from the Student–Management Forum. Reply privately to the student who
+          asked, or publish the Q&amp;A on the public forum page.
         </p>
       </div>
 

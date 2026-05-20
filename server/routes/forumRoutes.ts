@@ -424,21 +424,39 @@ router.post("/admin/forum/submissions/:id/replies", adminAuth, async (req, res) 
       },
     });
 
-    const publish = req.body?.markAnswered !== false;
+    const delivery = String(req.body?.delivery || "").trim();
+    const markAnswered = req.body?.markAnswered !== false;
+
+    let isPublic = existing.isPublic;
+    if (delivery === "public") {
+      isPublic = true;
+    } else if (delivery === "student") {
+      isPublic = false;
+    }
+
     const submission = await prisma.forumSubmission.update({
       where: { id },
-      data: publish
-        ? { status: "answered", updatedAt: new Date() }
-        : { status: "in_review", updatedAt: new Date() },
+      data: {
+        isPublic,
+        status: markAnswered ? "answered" : "in_review",
+        updatedAt: new Date(),
+      },
       include: {
         category: { select: { title: true, slug: true } },
         replies: true,
       },
     });
 
+    const message =
+      delivery === "public"
+        ? "Response published on the student forum."
+        : delivery === "student"
+          ? "Response sent to the student (visible in their portal)."
+          : "Response saved.";
+
     res.status(201).json({
       submission: mapSubmission(submission, true),
-      message: "Response published.",
+      message,
     });
   } catch (err) {
     console.error("admin/forum/replies POST", err);

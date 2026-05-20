@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -16,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft, Send, Globe } from "lucide-react";
 import { toast } from "sonner";
 
 const AdminForumDetail = () => {
@@ -26,7 +25,6 @@ const AdminForumDetail = () => {
   const [loading, setLoading] = useState(true);
   const [replyBody, setReplyBody] = useState("");
   const [authorName, setAuthorName] = useState("University Management");
-  const [isPublic, setIsPublic] = useState(false);
   const [status, setStatus] = useState("open");
   const [saving, setSaving] = useState(false);
 
@@ -38,7 +36,6 @@ const AdminForumDetail = () => {
         submission: ForumSubmission;
       };
       setSubmission(data.submission);
-      setIsPublic(data.submission.isPublic);
       setStatus(data.submission.status);
     } catch {
       toast.error("Question not found");
@@ -52,23 +49,29 @@ const AdminForumDetail = () => {
     load();
   }, [id]);
 
-  const postReply = async () => {
+  const postReply = async (delivery: "student" | "public") => {
     if (!id || replyBody.trim().length < 10) {
       toast.error("Response must be at least 10 characters.");
       return;
     }
     setSaving(true);
     try {
-      await adminForumFetch(`/admin/forum/submissions/${id}/replies`, {
+      const data = (await adminForumFetch(`/admin/forum/submissions/${id}/replies`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           body: replyBody,
           authorName,
+          delivery,
           markAnswered: true,
         }),
-      });
-      toast.success("Response posted");
+      })) as { message?: string };
+      toast.success(
+        data.message ||
+          (delivery === "public"
+            ? "Published on student forum"
+            : "Sent to student")
+      );
       setReplyBody("");
       await load();
     } catch (e) {
@@ -78,17 +81,17 @@ const AdminForumDetail = () => {
     }
   };
 
-  const saveMeta = async () => {
+  const saveStatus = async () => {
     if (!id) return;
     setSaving(true);
     try {
       const data = (await adminForumFetch(`/admin/forum/submissions/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status, isPublic }),
+        body: JSON.stringify({ status }),
       })) as { submission: ForumSubmission };
       setSubmission(data.submission);
-      toast.success("Updated");
+      toast.success("Status updated");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to update");
     } finally {
@@ -120,7 +123,7 @@ const AdminForumDetail = () => {
     <div className="mx-auto max-w-3xl space-y-6">
       <Button variant="ghost" onClick={() => navigate("/admin/forum")}>
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to forum
+        Back to student queries
       </Button>
 
       <Card>
@@ -128,6 +131,7 @@ const AdminForumDetail = () => {
           <div className="flex flex-wrap gap-2">
             <Badge variant="outline">{submission.categoryTitle}</Badge>
             <Badge>{submission.status}</Badge>
+            {submission.isPublic && <Badge className="bg-[#219ebc]">On public forum</Badge>}
           </div>
           <CardTitle>{submission.subject || "Student question"}</CardTitle>
           <p className="text-sm text-gray-500">
@@ -159,7 +163,11 @@ const AdminForumDetail = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Post management response</CardTitle>
+          <CardTitle className="text-lg">Answer this query</CardTitle>
+          <p className="text-sm text-gray-600">
+            Choose whether the response is visible only to the student who asked, or published on
+            the public Student–Management Forum page.
+          </p>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
@@ -181,24 +189,51 @@ const AdminForumDetail = () => {
               placeholder="Provide a clear, respectful, and constructive response…"
             />
           </div>
-          <Button
-            onClick={postReply}
-            disabled={saving}
-            className="bg-[#082952]"
-          >
-            {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Publish response
-          </Button>
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Button
+              onClick={() => void postReply("student")}
+              disabled={saving}
+              className="bg-[#082952] hover:bg-[#0d4080]"
+            >
+              {saving ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Send className="mr-2 h-4 w-4" />
+              )}
+              Send to student only
+            </Button>
+            <Button
+              onClick={() => void postReply("public")}
+              disabled={saving}
+              variant="outline"
+              className="border-[#219ebc] text-[#082952] hover:bg-[#219ebc]/10"
+            >
+              {saving ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Globe className="mr-2 h-4 w-4" />
+              )}
+              Publish on student forum
+            </Button>
+          </div>
+          <p className="text-xs text-gray-500">
+            <strong>Send to student:</strong> answer appears in the student&apos;s portal under My
+            questions. <strong>Publish on forum:</strong> Q&amp;A appears on{" "}
+            <a href="/student-management-forum" className="text-[#219ebc] underline" target="_blank" rel="noreferrer">
+              Management responses
+            </a>
+            .
+          </p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Visibility & status</CardTitle>
+          <CardTitle className="text-lg">Status</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="flex flex-wrap items-end gap-4">
           <div>
-            <Label>Status</Label>
+            <Label>Workflow status</Label>
             <Select value={status} onValueChange={setStatus}>
               <SelectTrigger className="mt-1 w-48">
                 <SelectValue />
@@ -211,14 +246,8 @@ const AdminForumDetail = () => {
               </SelectContent>
             </Select>
           </div>
-          <div className="flex items-center gap-3">
-            <Switch id="public" checked={isPublic} onCheckedChange={setIsPublic} />
-            <Label htmlFor="public">
-              Publish on public forum (students can see this Q&A)
-            </Label>
-          </div>
-          <Button variant="outline" onClick={saveMeta} disabled={saving}>
-            Save settings
+          <Button variant="outline" onClick={saveStatus} disabled={saving}>
+            Save status
           </Button>
         </CardContent>
       </Card>

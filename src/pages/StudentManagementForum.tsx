@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import StudentPageShell from "@/components/student-ui/StudentPageShell";
+import ForumHero from "@/components/forum/ForumHero";
+import ForumIntro from "@/components/forum/ForumIntro";
+import ErrorBoundary from "@/components/common/ErrorBoundary";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -33,7 +36,6 @@ import {
 } from "@/lib/forumApi";
 import { getStudentToken } from "@/lib/authStorage";
 import {
-  Calendar,
   Loader2,
   MessageSquare,
   Send,
@@ -128,44 +130,34 @@ const StudentManagementForum = () => {
   };
 
   return (
-    <StudentPageShell>
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#082952] via-[#0b2c55] to-[#219ebc] text-white">
-        <div className="container relative z-10 mx-auto px-4 py-14 md:py-20">
-          <p className="text-sm font-semibold uppercase tracking-widest text-[#8ecae6]">
-            SINU · Student Voice
-          </p>
-          <h1 className="mt-2 max-w-3xl text-3xl font-bold leading-tight md:text-4xl lg:text-5xl">
-            Student–Management Forum
-          </h1>
-          <p className="mt-4 max-w-2xl text-lg text-white/90">
-            {meta?.theme ||
-              "Building a Stronger University Community Through Dialogue and Partnership"}
-          </p>
-          {meta?.eventLabel && (
-            <p className="mt-3 flex items-center gap-2 text-sm text-[#8ecae6]">
-              <Calendar className="h-4 w-4 shrink-0" />
-              {meta.eventLabel}
-            </p>
-          )}
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild className="bg-white text-[#082952] hover:bg-white/90">
-              <a href="#ask-question">Ask a question</a>
-            </Button>
-            {!isLoggedIn && (
-              <Button
-                asChild
-                variant="outline"
-                className="border-white/40 bg-transparent text-white hover:bg-white/10"
-              >
-                <Link to="/student-login">Student sign in</Link>
-              </Button>
-            )}
-          </div>
-        </div>
-      </section>
+    <StudentPageShell className="relative flex min-h-screen flex-col bg-university-light-gray/50">
+      <div
+        className="pointer-events-none fixed inset-0 z-0 opacity-[0.04]"
+        style={{
+          backgroundImage: "url('/lovable-uploads/DSC05719.jpg')",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "100% 100%",
+          backgroundSize: "min(45vw, 520px)",
+        }}
+        aria-hidden
+      />
+
+      <ErrorBoundary>
+        <ForumHero
+          description={
+            meta?.theme ||
+            "Building a Stronger University Community Through Dialogue and Partnership"
+          }
+          eventLabel={meta?.eventLabel}
+        />
+      </ErrorBoundary>
+
+      <ErrorBoundary>
+        <ForumIntro />
+      </ErrorBoundary>
 
       {meta?.objectives && (
-        <section className="border-b border-gray-100 bg-gray-50 py-10">
+        <section className="relative z-10 border-b border-gray-100 bg-gray-50 py-10">
           <div className="container mx-auto px-4">
             <h2 className="text-center text-xl font-bold text-[#082952]">
               Forum objectives
@@ -185,7 +177,7 @@ const StudentManagementForum = () => {
         </section>
       )}
 
-      <section className="container mx-auto px-4 py-12">
+      <section id="forum-content" className="relative z-10 container mx-auto px-4 py-12">
         {loading ? (
           <div className="flex justify-center py-20">
             <Loader2 className="h-10 w-10 animate-spin text-[#219ebc]" />
@@ -259,7 +251,7 @@ const StudentManagementForum = () => {
               </Accordion>
             </TabsContent>
 
-            <TabsContent value="answers">
+            <TabsContent value="answers" id="forum-answers">
               {publicAnswers.length === 0 ? (
                 <Card>
                   <CardContent className="py-10 text-center text-gray-500">
@@ -356,7 +348,7 @@ const StudentManagementForum = () => {
         )}
       </section>
 
-      <section id="ask-question" className="border-t bg-[#f0f4f8] py-14">
+      <section id="ask-question" className="relative z-10 border-t bg-[#f0f4f8] py-14">
         <div className="container mx-auto max-w-2xl px-4">
           <h2 className="text-2xl font-bold text-[#082952]">Submit your question</h2>
           <p className="mt-2 text-sm text-gray-600">

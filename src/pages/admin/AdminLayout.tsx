@@ -11,7 +11,7 @@ const nav = [
   { to: "/admin/accepted", label: "Accepted", icon: CheckCircle },
   { to: "/admin/rejected", label: "Rejected", icon: XCircle },
   { to: "/admin/tenders", label: "Tenders & EOI", icon: FileText },
-  { to: "/admin/forum", label: "Student Forum", icon: MessageSquare },
+  { to: "/admin/forum", label: "Student Queries", icon: MessageSquare },
 ];
 
 const AdminLayout = () => {
