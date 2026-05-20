@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { clearAdminToken, getAdminToken } from "@/lib/authStorage";
-import { LayoutDashboard, Inbox, CheckCircle, XCircle, LogOut, FileText } from "lucide-react";
+import { LayoutDashboard, Inbox, CheckCircle, XCircle, LogOut, FileText, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -11,6 +11,7 @@ const nav = [
   { to: "/admin/accepted", label: "Accepted", icon: CheckCircle },
   { to: "/admin/rejected", label: "Rejected", icon: XCircle },
   { to: "/admin/tenders", label: "Tenders & EOI", icon: FileText },
+  { to: "/admin/forum", label: "Student Queries", icon: MessageSquare },
 ];
 
 const AdminLayout = () => {
