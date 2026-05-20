@@ -7,6 +7,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
 import ApplyHero from "@/components/apply/ApplyHero";
+import ApplyIntro from "@/components/apply/ApplyIntro";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -546,14 +547,30 @@ const Apply = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="relative min-h-screen flex flex-col bg-university-light-gray/50">
+      <div
+        className="pointer-events-none fixed inset-0 z-0 opacity-[0.04]"
+        style={{
+          backgroundImage: "url('/lovable-uploads/DSC05873.jpg')",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "100% 100%",
+          backgroundSize: "min(45vw, 520px)",
+        }}
+        aria-hidden
+      />
+
       <ErrorBoundary>
         <Header />
       </ErrorBoundary>
 
-      <main className="relative flex flex-grow flex-col">
-        {/* Full-bleed hero image behind the absolute header / logo */}
+      <main className="relative z-10 flex flex-grow flex-col">
         <ApplyHero />
+
+        {!submissionResult && (
+          <ErrorBoundary>
+            <ApplyIntro />
+          </ErrorBoundary>
+        )}
 
         {submissionResult && submissionSnapshot ? (
           <div className="relative z-10 flex flex-col bg-gray-50">
@@ -662,7 +679,7 @@ const Apply = () => {
             </div>
           </div>
         ) : (
-        <div className="relative z-10 flex flex-col bg-gray-50">
+        <div id="apply-form" className="relative z-10 flex flex-col bg-gray-50">
           <div className="border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-sm">
           <div className="mx-auto flex max-w-5xl flex-col gap-3 px-4 py-3 sm:px-6">
             <div className="flex flex-wrap items-center justify-between gap-2">
