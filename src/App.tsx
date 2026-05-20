@@ -35,6 +35,7 @@ import MarineScienceConservation from "./pages/MarineScienceConservation";
 import ClimateChangeAdaptation from "./pages/ClimateChangeAdaptation";
 import SustainableDevelopment from "./pages/SustainableDevelopment";
 import IndigenousKnowledge from "./pages/IndigenousKnowledge";
+import CentreForIslandsFuture from "./pages/CentreForIslandsFuture";
 import PublicHealth from "./pages/PublicHealth";
 import ResearchCentersInstitutes from "./pages/ResearchCentersInstitutes";
 import ResearchImpact from "./pages/ResearchImpact";
@@ -127,6 +128,7 @@ const App = () => (
           <Route path="/climate-change-adaptation" element={<ClimateChangeAdaptation />} />
           <Route path="/sustainable-development" element={<SustainableDevelopment />} />
           <Route path="/indigenous-knowledge" element={<IndigenousKnowledge />} />
+          <Route path="/centre-for-islands-future" element={<CentreForIslandsFuture />} />
           <Route path="/public-health" element={<PublicHealth />} />
           <Route path="/research-centers-institutes" element={<ResearchCentersInstitutes />} />
           <Route path="/research-impact" element={<ResearchImpact />} />

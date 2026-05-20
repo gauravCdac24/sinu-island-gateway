@@ -37,6 +37,7 @@ export const megaMenuData = {
       { title: "Climate Change Adaptation", url: "/climate-change-adaptation" },
       { title: "Sustainable Development", url: "/sustainable-development" },
       { title: "Indigenous Knowledge", url: "/indigenous-knowledge" },
+      { title: "Centre for Islands Future", url: "/centre-for-islands-future" },
       { title: "Public Health", url: "/public-health" },
       { title: "Security Studies", url: "#" }
     ],

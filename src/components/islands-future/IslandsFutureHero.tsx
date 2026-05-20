@@ -2,14 +2,14 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import OptimizedImage from "@/components/common/OptimizedImage";
 import { Link } from "react-router-dom";
-import { GraduationCap, Search, BookOpen, FileText } from "lucide-react";
+import { Globe2, Handshake, BookOpen, Waves } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const scrollToForm = () => {
-  document.getElementById("apply-form")?.scrollIntoView({ behavior: "smooth" });
+const scrollToContent = () => {
+  document.getElementById("islands-future-content")?.scrollIntoView({ behavior: "smooth" });
 };
 
-const ApplyHero = () => {
+const IslandsFutureHero = () => {
   const [scrolled, setScrolled] = React.useState(0);
 
   React.useEffect(() => {
@@ -31,8 +31,8 @@ const ApplyHero = () => {
         }}
       >
         <OptimizedImage
-          src="/lovable-uploads/DSC05873.jpg"
-          alt="Students on campus at Solomon Islands National University"
+          src="/lovable-uploads/1763956138152.jpg"
+          alt="Pacific islands — Centre for Islands Future at SINU"
           className="h-full w-full object-cover object-center"
           objectFit="cover"
           priority
@@ -56,24 +56,24 @@ const ApplyHero = () => {
           )}
         >
           <p className="mb-1 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#082952]">
-            <GraduationCap className="h-3.5 w-3.5" aria-hidden />
-            Admissions
+            <Globe2 className="h-3.5 w-3.5" aria-hidden />
+            Collaboration
           </p>
           <h1 className="mb-2 text-xl font-bold leading-snug text-[#082952] sm:text-2xl md:text-3xl">
-            Apply to study at SINU
+            Centre for Islands Future
           </h1>
           <p className="mb-4 text-xs leading-relaxed text-[#082952]/90 sm:text-sm">
-            Start your undergraduate or postgraduate journey — explore programmes, prepare your
-            documents, and complete your application online in guided steps.
+            A SINU hub for Pacific-led research, policy dialogue, and partnerships shaping resilient
+            island communities.
           </p>
           <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
             <Button
               type="button"
               size="sm"
               className="h-9 w-full bg-[#ffb703] text-sm font-bold text-[#082952] hover:bg-[#d7a12c] sm:w-auto sm:px-4"
-              onClick={scrollToForm}
+              onClick={scrollToContent}
             >
-              Start application
+              Explore the centre
             </Button>
             <Button
               size="sm"
@@ -81,32 +81,31 @@ const ApplyHero = () => {
               className="h-9 w-full border-2 border-[#082952] bg-white text-sm font-bold text-[#082952] hover:bg-[#082952] hover:text-white sm:w-auto sm:px-4"
               asChild
             >
-              <Link to="/course-finder">Find a programme</Link>
+              <Link to="/research-partnerships">Partner with us</Link>
             </Button>
           </div>
           <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 border-t border-white/20 pt-3 text-xs font-semibold">
             <Link
-              to="/admission-requirements"
+              to="/marine-science-conservation"
+              className="inline-flex items-center gap-1 text-[#082952] hover:underline"
+            >
+              <Waves className="h-3.5 w-3.5" aria-hidden />
+              Marine science
+            </Link>
+            <Link
+              to="/climate-change-adaptation"
               className="inline-flex items-center gap-1 text-[#082952] hover:underline"
             >
               <BookOpen className="h-3.5 w-3.5" aria-hidden />
-              Entry requirements
+              Climate adaptation
             </Link>
             <Link
-              to="/course-catalog"
+              to="/global-research-collaborations"
               className="inline-flex items-center gap-1 text-[#082952] hover:underline"
             >
-              <Search className="h-3.5 w-3.5" aria-hidden />
-              Course catalogue
+              <Handshake className="h-3.5 w-3.5" aria-hidden />
+              Global collaborations
             </Link>
-            <a
-              href="/Application-Form.pdf"
-              className="inline-flex items-center gap-1 text-[#082952] hover:underline"
-              download
-            >
-              <FileText className="h-3.5 w-3.5" aria-hidden />
-              PDF reference form
-            </a>
           </div>
         </div>
       </div>
@@ -114,8 +113,8 @@ const ApplyHero = () => {
       <div className="absolute bottom-0 left-0 right-0 z-10 bg-university-gold py-2.5 sm:py-3">
         <div className="animate-scroll whitespace-nowrap">
           <p className="inline-block px-4 text-xs font-semibold text-university-dark-gray sm:px-6 sm:text-sm md:text-base">
-            Semester intakes and key dates — apply before deadlines. Certified copies required where
-            stated in programme entry requirements.
+            Pacific futures — interdisciplinary research, community engagement, and international
+            university partnerships across the Blue Pacific.
           </p>
         </div>
       </div>
@@ -123,4 +122,4 @@ const ApplyHero = () => {
   );
 };
 
-export default ApplyHero;
+export default IslandsFutureHero;
